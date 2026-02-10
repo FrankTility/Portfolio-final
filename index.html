@@ -536,6 +536,69 @@
 /* Delay the 4th card by 0.6 seconds */
 .service-card.reveal:nth-child(4) {
     transition-delay: 0.6s;}
+
+    /* --- STRICT MOBILE OVERRIDES --- */
+@media (max-width: 768px) {
+    
+    /* 1. Fix "Stuffy" View All Buttons (Blog & Services) */
+    .services-header, .news-header {
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        gap: 20px !important;
+    }
+
+    /* Prevents the oval buttons from looking cramped */
+    .view-all-btn, .btn-primary {
+        width: 100% !important;
+        max-width: 200px !important;
+        padding: 12px 20px !important;
+        justify-content: center !important;
+    }
+
+    /* 2. Fix Pricing Section & Button Overflow */
+    .pricing-header {
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        gap: 15px !important;
+    }
+
+    /* Fix the "Get Started" button that is cutting off the screen */
+    .pricing-header .btn-primary {
+        margin-left: 0 !important;
+        position: static !important;
+        transform: none !important;
+    }
+
+    /* 3. Fix Gold Card Spanning Outside Background */
+    .pricing-grid {
+        display: grid !important;
+        grid-template-columns: 1fr !important; /* Stack cards vertically */
+        gap: 30px !important;
+        padding: 0 10px !important; /* Prevents edge-to-edge touching */
+        width: 100% !important;
+        overflow-x: hidden !important;
+    }
+
+    .pricing-card {
+        width: 100% !important;
+        margin: 0 auto !important;
+        box-sizing: border-box !important; /* Ensures padding doesn't add to width */
+    }
+
+    /* Ensure the background container expands for the stacked cards */
+    .pricing-section {
+        padding: 60px 20px !important;
+        height: auto !important;
+    }
+
+    /* 4. Fix Services Icon & Text alignment */
+    .service-card {
+        padding: 30px 20px !important;
+        text-align: center !important;
+    }
+}
 </style>
 
 
