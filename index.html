@@ -1,0 +1,3304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+ <style>
+    :root {
+        --nav-bg: #1B3C2D;
+        --accent-gold: #FFB800;
+        --page-bg: #E5E5E5;
+    }
+
+    body {
+        background-color: var(--page-bg);
+        margin: 0;
+        padding: 0;
+        font-family: 'Inter', sans-serif;
+    }
+
+    /* MODIFIED: The wrapper now handles the sticky boundary */
+    .content-wrapper {
+        background-color: #FFFFFF;
+        max-width: 1300px; /* Adjust based on your prototype width */
+        margin: 40px auto; /* Margin top/bottom creates the floating gap */
+        border-radius: 24px; /* Matches the rounded corners in your image */
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1); /* Soft shadow for elevation */
+        overflow: hidden;
+        position: relative;
+    }
+
+    section {
+        padding: 80px 50px;
+        background: #FFFFFF; /* All sections share the white background */
+        border-bottom: 1px solid #F0F0F0; /* Subtle divider instead of a gap */
+    }
+
+    /* MODIFIED: Sticky Header Container */
+    .header-sticky-container {
+        position: fixed;
+        top: 40px; /* Matches the content-wrapper margin */
+        left: 50%;
+        transform: translateX(-50%);
+        width: 100%;
+        max-width: 1300px; /* Must match the content-wrapper max-width */
+        z-index: 10000;
+        padding: 20px;
+        pointer-events: none;
+    }
+
+    /* State when scrolling down */
+   .header-sticky-container.scrolled {
+        top: 0;
+        max-width: 100%;
+        padding: 0;
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    }
+
+    /* The Pill-Shaped Nav Bar */
+   .nav-pill {
+        pointer-events: auto;
+        background-color: rgba(0, 0, 0, 0.7) !important;
+        border-radius: 999px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px 25px;
+        margin: 0 auto;
+        transition: all 0.4s ease;
+        max-width: 1100px;
+        backdrop-filter: blur(12px) !important;       /* The "Frosted" effect */
+    -webkit-backdrop-filter: blur(12px);          /* Support for Safari */
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    }
+
+    /* MODIFIED: Nav Bar collapses/shrinks when scrolled */
+    .header-sticky-container.scrolled .nav-pill {
+        max-width: 100%;
+        border-radius: 0;
+    }
+
+    .logo-container {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        color: white;
+        font-weight: 700;
+        font-size: 1.2rem;
+    }
+
+    .logo-circle {
+        background-color: var(--accent-gold);
+        width: 35px;
+        height: 35px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+    }
+
+    .logo-circle img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .nav-links a {
+        color: #FFFFFF;
+        text-decoration: none;
+        margin: 0 15px;
+        font-size: 0.9rem;
+        transition: color 0.3s;
+    }
+
+    .nav-links a.active { color: var(--accent-gold); }
+
+    .contact-btn {
+        background-color: white;
+        color: black;
+        padding: 12px 25px;
+        border-radius: 999px;
+        font-weight: 600;
+        font-size: 0.85rem;
+        text-decoration: none;
+    }
+    .mobile-only-btn {
+    display: none !important;
+}
+
+    /* HERO SECTION STYLES */
+    .hero-container {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 80px 50px;
+        max-width: 1200px;
+        margin: 0 auto;
+        margin-top: 100px;
+        background: #FFFFFF;
+        position: relative;
+    }
+
+    .hero-text h2 {
+        background: var(--accent-gold);
+        color: black;
+        display: inline-block;
+        padding: 5px 15px;
+        border-radius: 8px;
+        font-weight: bold;
+        margin-bottom: 20px;
+    }
+
+    .hero-text h1 {
+        font-size: 4rem;
+        font-weight: 900;
+        line-height: 1.1;
+        color: #1a1a1a;
+    }
+
+    .hero-text h1 span {
+        color: var(--accent-gold);
+        border-bottom: 3px solid var(--accent-gold);
+    }
+
+    .hero-description {
+        color: #666;
+        margin: 25px 0;
+        max-width: 450px;
+        font-size: 1.1rem;
+    }
+
+    .hero-btns {
+        display: flex;
+        gap: 20px;
+        align-items: center;
+    }
+
+    .btn-portfolio {
+        background: var(--nav-bg);
+        color: white;
+        padding: 5px 5px 5px 25px;
+        border-radius: 999px;
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        text-decoration: none;
+        font-weight: 600;
+        transition: 0.3s;
+    }
+
+    .play-icon {
+        background: white;
+        color: black;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .btn-hire {
+        border: 2px solid #333;
+        padding: 12px 35px;
+        border-radius: 999px;
+        color: #333;
+        font-weight: 600;
+        text-decoration: none;
+    }
+
+    .hero-image-area {
+        position: relative;
+        width: 50%;
+    }
+
+    .gold-blob {
+        position: absolute;
+        width: 400px;
+        height: 400px;
+        background: var(--accent-gold);
+        border-radius: 47% 53% 70% 30% / 30% 30% 70% 70%;
+        z-index: 1;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -40%);
+    }
+
+    .person-img {
+        position: relative;
+        z-index: 2;
+        width: 100%;
+        display: block;
+    }
+
+    .floating-tag {
+        position: absolute;
+        z-index: 3;
+        background: white;
+        padding: 8px 18px;
+        border-radius: 12px;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: #333;
+    }
+
+    .tag-1 { top: 20%; left: -10%; }
+    .tag-2 { bottom: 15%; right: -5%; background: #f3f3f3; }
+    .tag-3 { bottom: 25%; right: 10%; background: var(--accent-gold); }
+
+ @media (max-width: 768px) {
+    /* 1. The Wrapper: Must have no bottom padding to let image touch the edge */
+    .hero-container {
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        padding: 60px 0 0 0 !important; 
+        overflow: hidden !important; 
+        position: relative !important;
+    }
+
+    .hero-text {
+        padding: 0 20px !important;
+        margin-bottom: 20px !important;
+    }
+
+    /* 2. THE IMAGE AREA: Rebuilt to force the 'Tucked' look */
+    .hero-image-area {
+        position: relative !important;
+        width: 100% !important;
+        height: 450px !important; /* Fixed height to control the stack */
+        display: flex !important;
+        justify-content: center !important;
+        align-items: flex-end !important; /* Forces image to the bottom */
+        margin: 0 !important;
+    }
+
+    /* 3. THE GOLD CIRCLE: Perfectly centered behind the head */
+    .gold-blob {
+        position: absolute !important;
+        top: 15% !important; 
+        width: 320px !important;
+        height: 320px !important;
+        background: var(--accent-gold) !important;
+        border-radius: 50% !important;
+        left: 50% !important;
+        transform: translateX(-50%) !important;
+        z-index: 1 !important;
+    }
+
+    /* 4. THE PERSON: Large and flush with the bottom */
+    .person-img {
+        position: relative !important;
+        width: 110% !important; /* Larger to fill the width */
+        max-width: 450px !important;
+        height: auto !important;
+        z-index: 2 !important;
+        margin-bottom: -15px !important; /* Forces it to overlap the divider below */
+        display: block !important;
+    }
+
+    /* 5. THE TAGS: 100% Style Match (No Stretching) */
+    div.floating-tag {
+        display: block !important;
+        position: absolute !important;
+        width: fit-content !important; /* Specifically prevents stretching */
+        padding: 10px 20px !important;
+        border-radius: 50px !important;
+        font-weight: 800 !important;
+        font-size: 0.8rem !important;
+        box-shadow: 0 8px 20px rgba(0,0,0,0.2) !important;
+        white-space: nowrap !important;
+        z-index: 10 !important;
+        border: none !important;
+    }
+
+    /* Color & Position Match for heroImageStack copy.jpg */
+    .tag-1 { 
+        background: var(--accent-gold) !important; 
+        color: #000 !important;
+        top: 45% !important; 
+        left: 5% !important; 
+    }
+
+    .tag-2 { 
+        background: #C0C0C0 !important; /* Silver/Grey */
+        color: #000 !important;
+        top: 48% !important; 
+        right: 5% !important;
+        height: fit-content;
+    }
+
+    .tag-3 { 
+        background: var(--accent-gold) !important; 
+        color: #000 !important;
+        bottom: 20% !important; 
+        right: 10% !important; 
+    }
+}
+/* Loader Styles */
+#loader-wrapper {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #FFFFFF; /* Matches your site background */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 10000;
+    transition: opacity 0.6s ease, visibility 0.6s;
+}
+
+.loader-content {
+    text-align: center;
+}
+
+.loader-circle {
+    width: 50px;
+    height: 50px;
+    border: 5px solid #F4F4F4;
+    border-top: 5px solid var(--accent-gold); /* Your brand gold */
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin: 0 auto 20px;
+}
+
+.loader-text {
+    font-size: 1.5rem;
+    font-weight: 900;
+    color: #1a1a1a;
+    letter-spacing: -1px;
+}
+
+.loader-text span {
+    color: var(--accent-gold);
+}
+
+/* Spin Animation */
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Class to hide loader via JS */
+.loader-hidden {
+    opacity: 0 !important;
+    visibility: hidden !important;
+}
+
+
+
+@media (max-width: 768px) {
+    /* Hide the desktop contact button and show it inside the menu instead */
+    .desktop-only-btn { display: none !important; }
+    
+    .nav-pill {
+        justify-content: space-between !important;
+        padding: 10px 20px !important;
+        width: 95% !important;
+    }
+
+    /* 1. Reset nav-links to be a hidden mobile drawer */
+    .nav-links {
+        display: flex !important;
+        position: fixed !important;
+        top: 0 !important;
+        right: -100% !important; /* Start off-screen */
+        width: 70% !important;
+        height: 100vh !important;
+        background: #FFFFFF !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        justify-content: center !important;
+        gap: 20px !important;
+        transition: 0.4s ease-in-out !important;
+        box-shadow: -10px 0 30px rgba(0,0,0,0.1) !important;
+        z-index: 1000 !important;
+    }
+
+    .nav-links.active {
+        right: 0 !important; /* Slide in */
+    }
+
+    /* 2. New Hamburger Styles */
+    .hamburger-menu {
+        display: block !important;
+        cursor: pointer !important;
+        z-index: 1001 !important;
+    }
+
+    .hamburger-menu .bar {
+        display: block !important;
+        width: 25px !important;
+        height: 3px !important;
+        margin: 5px auto !important;
+        background-color: #ffffff !important;
+        transition: 0.3s !important;
+    }
+
+    /* Hamburger Animation to X */
+    .hamburger-menu.is-active .bar:nth-child(2) { opacity: 0 !important; }
+    .hamburger-menu.is-active .bar:nth-child(1) { transform: translateY(8px) rotate(45deg) !important; }
+    .hamburger-menu.is-active .bar:nth-child(3) { transform: translateY(-8px) rotate(-45deg) !important; }
+
+.nav-links a {
+        color: #1a1a1a !important; /* Forces dark text on the white background */
+    }
+
+    /* Keep your 'Home' gold if it's currently gold */
+    .nav-links a.active {
+        color: var(--accent-gold) !important;
+    }
+
+    /* 1. RESTORE THE CONTACT BUTTON IN DRAWER */
+    .nav-link .mobile-only-btn {
+        display: flex !important; /* Force it to show inside the drawer */
+        background-color: var(--nav-bg) !important; /* Dark background so it's visible */
+        color: white !important;
+        margin-top: 20px !important;
+        padding: 12px 25px !important;
+        justify-content: center !important;
+    }
+
+    /* 2. MAKE THE 'X' ICON VISIBLE */
+    /* When the menu is active (is-active), the bars must turn dark to see them on the white drawer */
+    .hamburger-menu.is-active .bar {
+        background-color: #1a1a1a !important; /* Black bars for the 'X' */
+    }
+
+    /* Keep bars white only when the menu is CLOSED (on the green bar) */
+    .hamburger-menu:not(.is-active) .bar {
+        background-color: #ffffff !important; 
+    }
+
+    .nav-links .mobile-only-btn {
+    display: block !important;
+    background-color: var(--nav-bg) !important;
+    color: #ffffff !important;
+    padding: 12px 25px !important;
+    border-radius: 999px !important;
+    text-align: center !important;
+    margin: 20px auto !important;
+    width: 85% !important;
+    font-weight: 600 !important;}
+    
+}
+
+/* 1. The initial hidden state */
+.reveal {
+    position: relative;
+    opacity: 0;
+    transform: translateY(50px); /* Slides up from 50px below */
+    transition: all 0.8s ease-out;
+}
+
+/* 2. The state when the element is in view */
+.reveal.active {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Delay the 2nd card by 0.2 seconds */
+.service-card.reveal:nth-child(2) {
+    transition-delay: 0.2s;
+}
+
+/* Delay the 3rd card by 0.4 seconds */
+.service-card.reveal:nth-child(3) {
+    transition-delay: 0.4s;
+}
+
+/* Delay the 4th card by 0.6 seconds */
+.service-card.reveal:nth-child(4) {
+    transition-delay: 0.6s;}
+</style>
+
+
+</head>
+
+<body>
+<div id="loader-wrapper">
+    <div class="loader-content">
+        <div class="loader-circle"></div>
+        <div class="loader-text">Ezechi<span>.</span></div>
+    </div>
+</div>
+    <div class="content-wrapper">
+        <header class="header-sticky-container" id="main-nav">
+    <nav class="nav-pill">
+        <div class="logo-container">
+            <div class="logo-circle">
+                <img src="images\mylogo.png" alt="Logo" />
+            </div>
+            <span>Ezechi.</span>
+        </div>
+
+        <div class="nav-links" id="navlist">
+            <a href="#hero" class="active">Home</a>
+            <a href="#service">Services</a>
+            <a href="#about">About</a>
+            <a href="#project">Projects</a>
+            <a href="#blogs">Blogs</a>
+            <a href="#testimonial">Testimonials</a>
+            <div class="nav-link" id="navlist">
+                <a href="#contact" class="contact-btn mobile-only-btn">Contact Me</a>
+            </div>
+        </div>
+
+        <div class="hamburger-menu" id="hamburger">
+            <span class="bar"></span>
+            <span class="bar"></span>
+            <span class="bar"></span>
+        </div>
+
+        <a href="#contact" class="contact-btn desktop-only-btn">Contact Me</a>
+    </nav>
+</header>
+        <div class="content-wrapper">
+
+        <section id="hero" class="hero-container">
+        <div class="hero-text">
+            <h2>Hello There!</h2>
+            <h1>I'm <span>Ezechi Franklin</span><br>Graphic Designer<br>AI Prompt Engineer.</h1>
+            <p class="hero-description">
+                I'm an experienced Visual Artist and Developer specializing in high-impact branding and AI-integrated design solutions.
+            </p>
+            
+            <div class="hero-btns">
+                <a href="#project" class="btn-portfolio">
+                    View My Portfolio 
+                    <div class="play-icon"><i class="fa-solid fa-play"></i></div>
+                </a>
+                <a href="#contact" class="btn-hire">Hire Me</a>
+            </div>
+        </div>
+
+        <div class="hero-image-area">
+            <div class="gold-blob"></div>
+            <img src="images\mynewprofile.png" alt="Ezechi Franklin" class="person-img">
+            <div class="floating-tag tag-1">Graphic Designer</div>
+            <div class="floating-tag tag-3">AI Prompt Engineer</div>
+            <div class="floating-tag tag-2">Real Estate Developer</div>
+        </div>
+        </section>
+        </div>
+
+        <script>
+        window.addEventListener('scroll', function() {
+        const navContainer = document.getElementById('main-nav');
+        const scrollPosition = window.scrollY;
+
+        // Toggle the sticky/collapse state
+        if (scrollPosition > 20) {
+            navContainer.classList.add("scrolled");
+        } else {
+            navContainer.classList.remove("scrolled");
+        }
+
+        // OPTIONAL: Auto-Active Link Highlight
+        const sections = document.querySelectorAll('section');
+        const navLinks = document.querySelectorAll('.nav-links a');
+
+        sections.forEach(section => {
+            const sectionTop = section.offsetTop - 150;
+            const sectionHeight = section.clientHeight;
+            const sectionId = section.getAttribute('id');
+
+            if (scrollPosition >= sectionTop && scrollPosition < sectionTop + sectionHeight) {
+                navLinks.forEach(link => {
+                    link.classList.remove('active');
+                    if (link.getAttribute('href') === '#' + sectionId) {
+                        link.classList.add('active');
+                    }
+                });
+            }
+        });
+            });
+        </script>
+
+
+        <style>
+        /* Section Container */
+        .divider-wrapper {
+        position: relative;
+        height: 180px; /* Space for the overlap */
+        margin-top: -130px; /* Pulls it up to sit under the hero image */
+        overflow: hidden;
+        
+        }
+
+        /* Base Styling for both bars */
+        .moving-bar {
+        position: absolute;
+        width: 110%;
+        left: -5%;
+        padding: 20px 0;
+        display: flex;
+        align-items: center;
+        white-space: nowrap;
+        font-weight: 800;
+        text-transform: uppercase;
+        font-size: 1.2rem;
+        letter-spacing: 1px;
+        }
+
+        /* The Green Bar (Background) */
+        .bar-green {
+        background-color: var(--nav-bg);
+        color: white;
+        transform: rotate(-2deg);
+        z-index: 1;
+        top: 40px;
+        }
+
+        /* The Gold Bar (Foreground) */
+        .bar-gold {
+        background-color: var(--accent-gold);
+        color: black;
+        transform: rotate(2deg);
+        z-index: 2;
+        top: 50px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+    /* Scrolling Animation */
+    .scroll-content {
+        display: flex;
+        animation: scroll-text 20s linear infinite;
+    }
+
+    @keyframes scroll-text {
+        0% { transform: translateX(0); }
+        100% { transform: translateX(-50%); }
+    }
+
+    .item {
+        display: flex;
+        align-items: center;
+        margin-right: 50px;
+    }
+
+    .item i {
+        margin: 0 20px;
+        font-size: 0.8rem;
+    }
+</style>
+
+<div class="divider-wrapper">
+    <div class="moving-bar bar-green">
+        <div class="scroll-content">
+            <div class="item">Flyer Designs <i class="fa-solid fa-asterisk"></i></div>
+            <div class="item">Branding <i class="fa-solid fa-asterisk"></i></div>
+            <div class="item">Wedding IV Design <i class="fa-solid fa-asterisk"></i></div>
+            <div class="item">Flex Design <i class="fa-solid fa-asterisk"></i></div>
+            <div class="item">Flyer Designs <i class="fa-solid fa-asterisk"></i></div>
+            <div class="item">Branding <i class="fa-solid fa-asterisk"></i></div>
+            <div class="item">Wedding IV Design <i class="fa-solid fa-asterisk"></i></div>
+            <div class="item">Flex Design <i class="fa-solid fa-asterisk"></i></div>
+        </div>
+    </div>
+
+    <div class="moving-bar bar-gold">
+        <div class="scroll-content" style="animation-direction: reverse;">
+            <div class="item">Flyer Designs <i class="fa-solid fa-asterisk"></i></div>
+            <div class="item">Branding <i class="fa-solid fa-asterisk"></i></div>
+            <div class="item">Wedding IV Design <i class="fa-solid fa-asterisk"></i></div>
+            <div class="item">Flex Design <i class="fa-solid fa-asterisk"></i></div>
+            <div class="item">Flyer Designs <i class="fa-solid fa-asterisk"></i></div>
+            <div class="item">Branding <i class="fa-solid fa-asterisk"></i></div>
+            <div class="item">Wedding IV Design <i class="fa-solid fa-asterisk"></i></div>
+            <div class="item">Flex Design <i class="fa-solid fa-asterisk"></i></div>
+        </div>
+    </div>
+</div>
+<style>
+    :root {
+        --nav-bg: #1B3C2D;
+        --accent-gold: #FFB800;
+    }
+
+    .services-section { padding: 80px 50px; max-width: 1200px; margin: 0 auto; background: #fff; }
+    .services-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 50px; }
+    .services-title h2 { color: var(--accent-gold); font-size: 1.2rem; font-weight: bold; margin-bottom: 10px; }
+    .services-title h1 { font-size: 3rem; font-weight: 900; color: #1a1a1a; }
+    
+    /* View All Button */
+    .view-all-btn { background: var(--nav-bg); color: white; padding: 5px 5px 5px 25px; border-radius: 999px; display: flex; align-items: center; gap: 15px; text-decoration: none; font-weight: 600; cursor: pointer; }
+    .plus-icon { background: var(--accent-gold); color: black; width: 35px; height: 35px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+
+    /* Service Cards */
+    .services-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 30px; }
+    .service-card { background: #f9f9f9; padding: 40px; border-radius: 20px; transition: 0.3s; border: 1px solid #eee; position: relative; }
+    .service-card:hover { transform: translateY(-10px); box-shadow: 0 20px 40px rgba(0,0,0,0.05); }
+    .service-icon { width: 60px; height: 60px; background: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; color: var(--nav-bg); box-shadow: 0 5px 15px rgba(0,0,0,0.05); margin-bottom: 25px; }
+    .learn-more { color: var(--nav-bg); font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 8px; margin-top: 20px; }
+
+    /* Modal & Gallery UI */
+    .modal-overlay { position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.85); display: none; z-index: 1000; justify-content: center; align-items: center; padding: 20px; }
+    .modal-box { background: white; width: 100%; max-width: 900px; max-height: 90vh; border-radius: 24px; padding: 40px; overflow-y: auto; position: relative; }
+    .gallery-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 15px; margin-top: 25px; }
+    .gallery-slab { cursor: pointer; border-radius: 12px; overflow: hidden; border: 2px solid #eee; transition: 0.3s; background: #f9f9f9; text-align: center; }
+    .gallery-slab:hover { border-color: var(--accent-gold); }
+    .gallery-slab img { width: 100%; height: 120px; object-fit: cover; }
+    .gallery-slab span { display: block; padding: 10px; font-weight: bold; font-size: 0.85rem; }
+
+    /* Text List Styling */
+    .service-details-list { list-style: none; padding: 20px 0; }
+    .service-details-list li { font-size: 1.1rem; line-height: 1.6; border-bottom: 1px solid #f0f0f0; padding: 15px 0; display: flex; gap: 15px; }
+
+    /* Lightbox (Full Image View) */
+    #lightbox { position: fixed; z-index: 2000; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); display: none; flex-direction: column; justify-content: center; align-items: center; }
+    #lightbox img { max-width: 85%; max-height: 80%; border-radius: 8px; border: 3px solid #fff; }
+    .lightbox-nav { position: absolute; width: 95%; display: flex; justify-content: space-between; }
+    .nav-arrow { background: rgba(255,255,255,0.2); color: white; border: none; width: 60px; height: 60px; border-radius: 50%; cursor: pointer; font-size: 1.5rem; }
+
+    .service-card, .project-item {
+    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.4s ease !important;
+}
+
+.service-card:hover, .project-item:hover {
+    transform: translateY(-12px) !important; /* Lifts the card */
+    box-shadow: 0 20px 40px rgba(0,0,0,0.15) !important;
+    border: 1px solid var(--accent-gold) !important; /* Subtle brand glow */
+}
+
+/* Make the icon inside the card pop on hover */
+.service-card:hover .method-icon {
+    transform: scale(1.1) rotate(5deg) !important;
+    transition: 0.3s ease;}
+</style>
+
+<section id="service" class="services-section reveal">
+    <div class="services-header">
+        <div class="services-title">
+            <h2>— Services</h2>
+            <h1>Services I Provide</h1>
+        </div>
+        <div class="view-all-btn" onclick="toggleWebDesign()">
+            View All Services <div class="plus-icon"><i class="fa-solid fa-plus"></i></div>
+        </div>
+    </div>
+
+    <div class="services-grid">
+        <div id="graphic" class="service-card reveal">
+            <div class="service-icon"><i class="fa-solid fa-pen-nib"></i></div>
+            <h3>Graphic Designing</h3>
+            <p>Visual storytelling and brand identity through expert design.</p>
+            <div class="learn-more" onclick="openServiceModal('graphic')">Learn more <i class="fa-solid fa-arrow-right"></i></div>
+        </div>
+
+        <div id="aiprompt" class="service-card reveal">
+            <div class="service-icon"><i class="fa-solid fa-robot"></i></div>
+            <h3>AI Prompt Engineering</h3>
+            <p>Optimizing AI workflows and high-fidelity asset generation.</p>
+            <div class="learn-more" onclick="openServiceModal('ai')">Learn more <i class="fa-solid fa-arrow-right"></i></div>
+        </div>
+
+        <div id="estate" class="service-card reveal">
+            <div class="service-icon"><i class="fa-solid fa-house-chimney"></i></div>
+            <h3>Real Estate Development</h3>
+            <p>Property visualization and strategic project planning.</p>
+            <div class="learn-more" onclick="openServiceModal('realestate')">Learn more <i class="fa-solid fa-arrow-right"></i></div>
+        </div>
+
+        <div id="web-design-card" class="service-card reveal" style="display: none;">
+            <div class="service-icon"><i class="fa-solid fa-code"></i></div>
+            <h3>Website Design</h3>
+            <p>Responsive, high-performance web development.</p>
+            <div class="learn-more" onclick="openServiceModal('web')">Learn more <i class="fa-solid fa-arrow-right"></i></div>
+        </div>
+    </div>
+</section>
+
+<div id="serviceModal" class="modal-overlay reveal">
+    <div class="modal-box">
+        <span onclick="closeModal()" style="position:absolute; top:20px; right:30px; cursor:pointer; font-size:2rem;">&times;</span>
+        <h2 id="modalTitle" class="text-3xl font-black mb-4" style="font-size: 2rem; font-weight: 900;"></h2>
+        <div id="modalContent"></div>
+    </div>
+</div>
+
+<div id="lightbox">
+    <span onclick="closeLightbox()" style="position:absolute; top:30px; right:40px; color:white; font-size:3rem; cursor:pointer;">&times;</span>
+    <img id="lightbox-img" src="images/myCatalog-copy.jpg">
+    <div class="lightbox-nav">
+        <button class="nav-arrow" onclick="changeImg(-1)"><i class="fa-solid fa-chevron-left"></i></button>
+        <button class="nav-arrow" onclick="changeImg(1)"><i class="fa-solid fa-chevron-right"></i></button>
+    </div>
+</div>
+
+<script>
+    const serviceData = {
+        "graphic": {
+            "Birthday Design": ["images/BroPeace-copy.jpg", "images/Heritage-copy.jpg", "images/napooo-copy.jpg", "images/PapaBirthday-copy.jpg", "images/BroPeace-copy.jpg"], // REPLACE with your image links
+            "Business Flyer": ["images/NoFreeDesign-copy.jpg", "images/Angelaflyer-copy.jpg", "images/HomeComingSponsorship-copy2.jpg", "images/babes-copy.jpg", "images/havework-copy.jpg", "images/birthdayPromo-copy.jpg", "images/myCatalog-copy.jpg", "images/bringJobs-copy.jpg", "images/ChideraSew.jpg", "images/hireUs-copy.jpg", "images/NightParty-copy4.jpg", "images/Deangel.jpg", "images/EDXFlier-copy.jpg", "images/topnotch-copy.jpg", "images/EuropeTour.jpg", "images/Fashion.jpg", "images/zinnbeautyflier.jpg", "images/megaaffiliate.jpg", "images/wedesign.jpg", "images/WEEKEND-copy.jpg", "images/whatarewe-copy.jpg", "images/Afast-copy.jpg"],
+
+            "Business Logo": ["images/aeroessentials-copy.jpg", "images/AngelaLogo-copy.jpg", "images/AnnezéFever-copy3.jpg", "images/AsecLogo-copy.jpg", "images/chainDrive.JPG", "images/colortribe.jpg", "images/edExchange-copy.jpg", "images/henlev.jpg", "images/Jsolution.jpg", "images/kaimaCro.jpg", "images/kaysLogo-copy.jpg", "images/mydailypasto.jpg", "images/nellyschic.jpg", "images/NevLogo-copy.jpg", "images/olymzysig.jpg", "images/petify.jpg", "images/sephinagadgets.jpg", "images/twinstouch.jpg", "images/veee-copy.jpg", "images/wakkychicken.jpg", "images/zinnbeauty.jpg"],
+
+            "Cartoon/Comics": ["images/cavani.jpg", "images/davido.jpg", "images/twins.jpg", "images/ubi.jpg"],
+
+            "Event Design": ["images/Bukola&IsraelEinvite-copy.jpg", "images/DecCrusade2025-copy.jpg", "images/DeraIV-copy.jpg", "images/EduNurse-copy.jpg", "images/homecoming copyNew-copy.jpg", "images/HomeComingfaceCard.jpg", "Event Designs/HomecomingShadowCard copy.jpg", "images/Homecomingsponsors-copy.jpg", "images/JohnsonIv.jpg", "images/JOYZE-copy.jpg", "images/kingsleyIv.jpg", "images/LovingMemory-copy.jpg", "images/MamaPOP-copy.jpg", "images/masstrans.jpg", "images/NightParty-copy4.jpg", "images/pastorcandy-copy.jpg", "images/POPsticker.jpg", "images/WedAnni-copy.jpg", "images/worldjara.jpg"],
+
+            "New Month Design": ["images/february-copy.jpg"],
+    
+            "Oraimo Advert": ["images/advertCase-copy.jpg", "images/Nova2Advert-copy.jpg"],
+
+            "Product Branding": ["images/AsecAutosCap-copy.jpg", "images/completesetDespro copy.jpg", "images/desproModel-copy.jpg", "images/ELS.jpg", "images/ELScover.jpg", "images/jovys.jpg", "images/megalabel.jpg", "images/megasoap.jpg", "images/nellys.jpg", "images/OgaBethyModel.jpg", "images/POPsticker.jpg", "images/pureSkin9-copy.jpg", "images/pureSkin12-copy.jpg", "images/pureSkin14-copy.jpg", "images/pureSkin13-copy.jpg", "images/pureskin15-copy.jpg", "images/pureskin16-copy.jpg", "images/pureskin17-copy.jpg", "images/pureskin18-copy.jpg", "images/pureskin19-copy.jpg", "images/pureskinf1-copy.jpg", "images/Quincy.jpg", "images/Quincycover.jpg", "images/stainremover.jpg", "images/tigernut-copy.jpg", "images/TilesandRustCleaner-copy.jpg", "images/toiletWash-copy.jpg", "images/urielCreation-copy.jpg", "images/xpelAloevera-copy.jpg", "images/zoboCopy.jpg"]
+        },
+        "ai": {
+            "title": "AI Prompt Engineering",
+            "items": ["Custom Image Generation (Midjourney/DALL-E)", "Prompt Optimization Strategies", "AI Workflow Automation"]
+        },
+        "realestate": {
+            "title": "Real Estate Development",
+            "items": ["3D Architectural Visualization", "Property Planning & Site Analysis", "Structural Consulting"]
+        },
+        "web": {
+            "title": "Website Design",
+            "items": ["UI/UX Interface Design", "Responsive Full-Stack Development", "SEO & Speed Optimization", "School Websites", "Blog website", "Portfolio Website", "Online Banking Website", "Investment Website", "E.t.c"]
+        }
+    };
+
+    let activeGallery = [];
+    let currentImgIndex = 0;
+
+    function toggleWebDesign() {
+        const card = document.getElementById('web-design-card');
+        card.style.display = card.style.display === 'none' ? 'block' : 'none';
+    }
+
+    function openServiceModal(type) {
+        const modal = document.getElementById('serviceModal');
+        const content = document.getElementById('modalContent');
+        document.getElementById('modalTitle').innerText = serviceData[type].title || "Graphic Categories";
+        modal.style.display = 'flex';
+
+        if(type === 'graphic') {
+            let html = `<div class="gallery-grid">`;
+            Object.keys(serviceData.graphic).forEach(cat => {
+                html += `<div class="gallery-slab" onclick="openCategory('${cat}')">
+                            <img src="${serviceData.graphic[cat][0]}" alt="${cat}">
+                            <span>${cat} (${serviceData.graphic[cat].length})</span>
+                         </div>`;
+            });
+            content.innerHTML = html + `</div>`;
+        } else {
+            let html = `<ul class="service-details-list">`;
+            serviceData[type].items.forEach(item => {
+                html += `<li><i class="fa-solid fa-check text-green-700"></i> ${item}</li>`;
+            });
+            content.innerHTML = html + `</ul>`;
+        }
+    }
+
+    function openCategory(cat) {
+        activeGallery = serviceData.graphic[cat];
+        openLightbox(0);
+    }
+
+    function openLightbox(idx) {
+        currentImgIndex = idx;
+        document.getElementById('lightbox-img').src = activeGallery[idx];
+        document.getElementById('lightbox').style.display = 'flex';
+    }
+
+    function changeImg(step) {
+        currentImgIndex = (currentImgIndex + step + activeGallery.length) % activeGallery.length;
+        document.getElementById('lightbox-img').src = activeGallery[currentImgIndex];
+    }
+
+    function closeModal() { document.getElementById('serviceModal').style.display = 'none'; }
+    function closeLightbox() { document.getElementById('lightbox').style.display = 'none'; }
+</script>
+
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&display=swap');
+
+    .about-section {
+        background-color: #1B3C2D; /* Exact Forest Green */
+        padding: 100px 50px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 80px;
+        color: white;
+        overflow: hidden;
+    }
+
+    /* Left Side: Image and Floating Tags */
+    .about-image-container {
+        position: relative;
+    width: 100%;           /* Responsive width */
+    max-width: 450px;      /* Maximum size on large screens */
+    aspect-ratio: 1 / 1;   /* Forces the container to stay square */
+    margin: 0 auto;        /* Centers it on mobile */
+    }
+
+    .gold-circle-bg {
+        position: absolute;
+    width: 100%;
+    height: 100%;
+    background-color: #FFB800; /* Gold background */
+    border-radius: 50%;
+    z-index: 1;
+    /* This ensures it doesn't deform even if the parent changes */
+    object-fit: contain;
+    }
+
+    .person-about-img {
+       position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 110%; /* Makes image pop out of circle */
+    height: auto;
+    z-index: 2;
+    }
+
+    /* Floating Tags around the circle */
+    .about-tag {
+        position: absolute;
+        background: #FFB800;
+        color: black;
+        padding: 6px 15px;
+        border-radius: 20px;
+        font-size: 0.75rem;
+        font-weight: 700;
+        z-index: 3;
+        white-space: nowrap;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    }
+
+    .at-1 { top: 10%; left: -10%; }
+    .at-3 { bottom: 30%; left: -10%; }
+    .at-4 { bottom: 10%; left: 10%; }
+    .at-5 { top: 5%; right: 10%; }
+    .at-6 { top: 25%; right: -15%; }
+    .at-7 { bottom: 40%; right: -12%; }
+    .at-8 { bottom: 15%; right: 0%; }
+
+    /* Right Side: Text and Stats */
+    .about-content { max-width: 500px; }
+    
+    .about-header { display: flex; align-items: center; gap: 10px; color: #FFB800; font-weight: bold; margin-bottom: 15px; }
+    .about-header span { width: 30px; height: 2px; background: #FFB800; }
+
+    .about-content h1 { font-size: 3rem; font-weight: 800; line-height: 1.2; margin-bottom: 20px; }
+    .about-content h1 span { color: #FFB800; }
+
+    .about-description { opacity: 0.8; line-height: 1.6; margin-bottom: 40px; }
+
+    .stats-container { display: flex; gap: 40px; margin-bottom: 50px; }
+    .stat-box h2 { font-size: 2.5rem; font-weight: 900; color: #FFB800; margin-bottom: 5px; }
+    .stat-box p { font-size: 0.85rem; opacity: 0.7; }
+
+    /* Custom Download CV Button */
+    .cv-download-wrapper { display: flex; align-items: center; gap: 30px; }
+    
+    .btn-cv {
+        background: #1B3C2D;
+        border: 2px solid #FFB800;
+        color: white;
+        padding: 10px 10px 10px 25px;
+        border-radius: 999px;
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        text-decoration: none;
+        font-weight: 600;
+        transition: 0.3s;
+    }
+
+    .arrow-circle {
+        background: #FFB800;
+        color: black;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .signature {
+        font-family: 'Dancing Script', cursive; /* Styled font for name */
+        font-size: 1.8rem;
+        color: #FFB800;
+    }
+    @media (max-width: 992px) {
+    .about-section {
+        flex-direction: column; /* Stacks image on top of text */
+        text-align: center;
+        gap: 40px;
+    }
+}
+</style>
+
+<section id="about" class="about-section reveal">
+    <div name="about" class="about-image-container">
+        <div class="gold-circle-bg"></div>
+        <img src="images/casualprofile.png" class="person-about-img"> <div class="about-tag at-1">Graphic Design</div>
+        <div class="about-tag at-3">Real Estate</div>
+        <div class="about-tag at-4">Web Design</div>
+        <div class="about-tag at-5">AI Prompt Engineering</div>
+        <div class="about-tag at-6">Real Estate</div>
+        <div class="about-tag at-7">Printing</div>
+        <div class="about-tag at-8">Branding</div>
+    </div>
+
+    <div class="about-content">
+        <div class="about-header"><span></span> About Me</div>
+        <h1>Who is <span>Ezechi Franklin?</span></h1>
+        
+        <p class="about-description">
+            I am a versatile creative professional dedicated to bridging the gap between traditional design and future-forward technology. With a focus on impactful visuals and strategic development, I deliver excellence across multiple industries.
+        </p>
+
+        <div class="stats-container">
+            <div class="stat-box">
+                <h2>150+</h2>
+                <p>Projects Completed</p>
+            </div>
+            <div class="stat-box">
+                <h2>10+</h2>
+                <p>Industry Covered</p>
+            </div>
+            <div class="stat-box">
+                <h2>7+</h2>
+                <p>Years of Experience</p>
+            </div>
+        </div>
+
+        <div class="cv-download-wrapper">
+            <a href="EZECHIProfessionalCV.pdf" download class="btn-cv">
+                Download CV
+                <div class="arrow-circle"><i class="fa-solid fa-arrow-right"></i></div>
+            </a>
+            <div class="signature">Ezechi Franklin</div> </div>
+    </div>
+</section>
+
+<style>
+    .tools-section {
+        padding: 100px 50px;
+        background-color: #FFFFFF; /* Pure white background as seen in image */
+        text-align: center;
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    .tools-header h2 {
+        color: var(--accent-gold);
+        font-size: 1.1rem;
+        font-weight: bold;
+        margin-bottom: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+    }
+
+    .tools-header h2::before {
+        content: "";
+        width: 20px;
+        height: 2px;
+        background: var(--accent-gold);
+    }
+
+    .tools-header h1 {
+        font-size: 3rem;
+        font-weight: 900;
+        line-height: 1.1;
+        margin-bottom: 60px;
+        color: #1a1a1a;
+    }
+
+    .tools-header h1 span {
+        color: var(--accent-gold);
+        display: block;
+    }
+
+    /* Tools Grid */
+    .tools-grid {
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 30px;
+    }
+
+    /* Individual Tool Pill */
+    .tool-pill {
+        background: #F8F8F8; /* Light grey pill background */
+        padding: 40px 20px;
+        border-radius: 100px; /* High radius for the vertical pill look */
+        width: 140px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        transition: 0.3s ease;
+        border: 1px solid #f0f0f0;
+    }
+
+    .tool-pill:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 15px 30px rgba(0,0,0,0.05);
+        background: white;
+    }
+
+    .tool-icon {
+        width: 50px;
+        height: 50px;
+        margin-bottom: 20px;
+        object-fit: contain;
+    }
+
+    .tool-percentage {
+        font-size: 1.5rem;
+        font-weight: 900;
+        color: #1a1a1a;
+        margin-bottom: 5px;
+    }
+
+    .tool-name {
+        font-size: 0.9rem;
+        color: #888;
+        font-weight: 600;
+    }
+</style>
+
+<section class="tools-section reveal">
+    <div class="tools-header">
+        <h2>My Favorite Tools</h2>
+        <h1><span>Exploring the Tools</span> Behind My Designs</h1>
+    </div>
+
+    <div class="tools-grid">
+        <div class="tool-pill">
+            <img src="images/canva.png" alt="Canva" class="tool-icon">
+            <div class="tool-percentage">90%</div>
+            <div class="tool-name">Canva</div>
+        </div>
+
+        <div class="tool-pill">
+            <img src="images/Gemini.png" alt="Gemini" class="tool-icon">
+            <div class="tool-percentage">98%</div>
+            <div class="tool-name">Gemini</div>
+        </div>
+
+        <div class="tool-pill">
+            <img src="images/Photoshop-logo.png" alt="Photoshop" class="tool-icon">
+            <div class="tool-percentage">99%</div>
+            <div class="tool-name">Photoshop</div>
+        </div>
+
+        <div class="tool-pill">
+            <img src="images/After-Effects-Icon.png" alt="After Effects" class="tool-icon">
+            <div class="tool-percentage">85%</div>
+            <div class="tool-name">After Effects</div>
+        </div>
+
+        <div class="tool-pill">
+            <img src="images/Corel Logo.png" alt="CorelDraw" class="tool-icon">
+            <div class="tool-percentage">95%</div>
+            <div class="tool-name">CorelDraw</div>
+        </div>
+
+        <div class="tool-pill">
+            <img src="images/illustrator-logo.png" alt="Adobe Illustrator" class="tool-icon">
+            <div class="tool-percentage">95%</div>
+            <div class="tool-name">Illustrator</div>
+        </div>
+    </div>
+</section>
+
+<style>
+    .projects-section { padding: 80px 50px; background: #F9F9F9; max-width: 1300px; margin: 0 auto; }
+    
+    .proj-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 50px; }
+    .proj-header h1 { font-size: 3.5rem; font-weight: 900; color: #1a1a1a; }
+    .proj-header h1 span { color: var(--accent-gold); }
+
+    /* Custom View All Projects Button */
+    .btn-all-projects { 
+        background: var(--accent-gold); color: black; padding: 12px 30px; 
+        border-radius: 999px; font-weight: 700; display: flex; align-items: center; 
+        gap: 15px; text-decoration: none; transition: 0.3s;
+    }
+    /* Modal overlay */
+.proj-modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.75);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+
+/* Modal container */
+.proj-modal-box {
+    background: #fff;
+    width: 90%;
+    max-width: 900px;
+    max-height: 90vh;           /* 🔑 constrain height */
+    border-radius: 16px;
+    padding: 24px;
+    overflow-y: auto;           /* 🔑 enable scrolling */
+    position: relative;
+}
+
+/* Image handling */
+.modal-img-display {
+    width: 100%;
+    max-height: 45vh;           /* 🔑 image stays balanced */
+    object-fit: contain;
+    border-radius: 12px;
+    margin-bottom: 1.5rem;
+    position: sticky;
+    top: 0;
+    background: #fff;
+    padding-bottom: 1rem;
+}
+
+    .btn-all-projects i { background: black; color: white; width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; }
+
+    /* Grid Layout: Top row 1 col, Bottom row 2 cols */
+    .projects-grid { display: grid; 
+    grid-template-columns: repeat(2, 1fr); 
+    gap: 30px; }
+
+    /* Forces the FIRST project card to always span 2 columns */
+.project-card:first-child { 
+    grid-column: span 2; 
+}
+    .project-card.full-width { grid-column: span 2; }
+
+    .project-card { background: white; border-radius: 24px; padding: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); position: relative; overflow: hidden; }
+    
+    /* Sliding Image Container for Oraimo */
+    .slide-container { position: relative; 
+    width: 100%; 
+    height: 450px; /* Increased for the featured top project */
+    border-radius: 15px; 
+    overflow: hidden; 
+    margin-bottom: 20px; }
+    .slide-wrapper { display: flex; width: 200%; height: 100%; animation: slide-left 2s infinite alternate ease-in-out; }
+    .slide-wrapper img { width: 50%; height: 100%; object-fit: cover; }
+        /* Adjust height for the smaller 2-column cards so they don't look stretched */
+.projects-grid .project-card:not(:first-child) .slide-container {
+    height: 300px;
+}
+
+.project-tag {
+    display: inline-block;
+    padding: 4px 12px;
+    background: #f4f4f4;
+    color: #666;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+    letter-spacing: 1px;
+}
+
+/* Highlight the tag on hover of the parent card */
+.project-item:hover .project-tag {
+    background: var(--accent-gold);
+    color: #000;
+}
+    @keyframes slide-left {
+        0%, 45% { transform: translateX(0); }
+        55%, 100% { transform: translateX(-50%); }
+    }
+
+    .proj-info { display: flex; justify-content: space-between; align-items: center; }
+    .proj-title h3 { font-size: 1.4rem; font-weight: 800; }
+    .proj-arrow { width: 45px; height: 45px; background: var(--nav-bg); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.3s; }
+    .proj-arrow:hover { background: var(--accent-gold); color: black; }
+
+    /* Project Modal Overlay */
+    .proj-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); display: none; z-index: 12000; justify-content: center; align-items: center; padding: 20px; }
+    .proj-modal-box { background: white; width: 100%; max-width: 800px; border-radius: 20px; padding: 40px; position: relative; }
+    .modal-img-display { width: 100%; height: 400px; object-fit: contain; background: #eee; border-radius: 15px; margin-bottom: 25px; }
+
+    /* ===== MOBILE RESPONSIVENESS FOR PROJECTS ===== */
+@media (max-width: 992px) {
+    .projects-section {
+        padding: 60px 20px;
+    }
+
+    .proj-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 20px;
+    }
+
+    .proj-header h1 {
+        font-size: 2.5rem;
+    }
+
+    .projects-grid {
+        grid-template-columns: 1fr; /* Everything becomes 1 column */
+        gap: 20px;
+    }
+
+    .project-card:first-child, 
+    .project-card {
+        grid-column: span 1; /* Reset all cards to 1 column width */
+    }
+
+    .slide-container,
+    .projects-grid .project-card:not(:first-child) .slide-container {
+        height: 250px; /* Uniform height for mobile viewing */
+    }
+}
+</style>
+
+<section id="project" class="projects-section">
+    <div class="proj-header">
+        <div>
+            <h2 class="text-gold font-bold">— My Portfolio</h2>
+            <h1>My Latest <span>Projects</span></h1>
+        </div>
+        <a href="#service" class="btn-all-projects">View All Projects <i class="fa-solid fa-arrow-right"></i></a>
+    </div>
+
+    <div class="projects-grid">
+        <div class="project-card full-width">
+            <div class="slide-container">
+                <span class="project-tag">Product Design</span>
+                <div class="slide-wrapper">
+                    <img src="images/advertCase-copy.jpg" alt="Oraimo 1"> <img src="images/Nova2Advert-copy.jpg" alt="Oraimo 2"> </div>
+            </div>
+            <div class="proj-info">
+                <div class="proj-title">
+                    <p class="text-gray-400 text-sm font-bold uppercase">UI/UX Redesign</p>
+                    <h3>Oraimo Mobile App & Brand Redesign</h3>
+                </div>
+                <div class="proj-arrow" onclick="openProject('oraimo')"><i class="fa-solid fa-arrow-right"></i></div>
+            </div>
+            </div>
+
+            <div class="project-card">
+                <span class="project-tag">Event Design</span>
+                <img src="images/pastorcandy-copy.jpg" class="w-full h-64 object-cover rounded-xl mb-4">
+                <div class="proj-info">
+                <div class="proj-title">
+                    <p class="text-gray-400 text-sm font-bold uppercase">MBO-IMO'25 - Event Creative</p>
+                    <h3>
+                        <ul>
+                        <li><b>Type:</b> Event Design</li>
+                        <li><b>Client:</b> Mboutidem & Cosmos</li>
+                        <li><b>Project:</b> IMO'25 Wedding Flyer</li>
+                        <li><b>Role:</b> Graphic Designer</li>
+                        </ul>
+                     </h3>   
+                </div>
+                <div class="proj-arrow" onclick="openProject('project2')"><i class="fa-solid fa-arrow-right"></i></div>
+                </div>
+            </div>
+
+            <div class="project-card">
+                <span class="project-tag">Event Design</span>
+                 <img src="images/homecoming copyNew-copy.jpg" class="w-full h-64 object-cover rounded-xl mb-4">
+                <div class="proj-info">
+                <div class="proj-title">
+                    <p class="text-gray-400 text-sm font-bold uppercase">Victor's Home Coming</p>
+                    <h3>
+                        <ul> 
+                            <li><b>Type:</b> Event / Entertainment Design</li>
+                            <li><b>Client:</b> Victory Homecoming Event</li>
+                            <li><b>Role:</b> Graphic Designer</li>
+                            <li><b>Year:</b> 2025</li></ul></h3>
+                </div>
+                <div class="proj-arrow" onclick="openProject('project3')"><i class="fa-solid fa-arrow-right"></i></div>
+            </div>
+            </div>
+            <div class="project-card">
+                <span class="project-tag">Web Design</span>
+            <img src="images/herosection.png" class="w-full h-64 object-cover rounded-xl mb-4">
+            <div class="proj-info">
+                <div class="proj-title">
+                    <p class="text-gray-400 text-sm font-bold uppercase">My Portfolio</p>
+                    <h3>
+                        <ul> 
+                            <li><b>Type:</b> Web Development</li>
+                            <li><b>Client:</b> Ezechi Franklin</li>
+                            <li><b>Role:</b> Developer/Designer</li>
+                            <li><b>Year:</b> 2026</li></ul></h3>
+                </div>
+                <div class="proj-arrow" onclick="openProject('project4')"><i class="fa-solid fa-arrow-right"></i></div>
+            </div>
+
+            </div>
+    
+        </div>
+    
+
+</section>
+
+<div id="projModal" class="proj-modal reveal">
+    <div class="proj-modal-box">
+        <span onclick="closeProjModal()" class="absolute top-5 right-5 text-3xl cursor-pointer">&times;</span>
+        <img id="modalFullImg" class="modal-img-display" src="">
+        
+        <div id="modalControls" class="flex gap-4 mb-4" style="display:none;">
+            <button onclick="changeModalImg(-1)" class="bg-gray-200 p-2 rounded-lg"><i class="fa-solid fa-chevron-left"></i> Prev</button>
+            <button onclick="changeModalImg(1)" class="bg-gray-200 p-2 rounded-lg">Next <i class="fa-solid fa-chevron-right"></i></button>
+        </div>
+
+        <h2 id="modalProjTitle" class="text-3xl font-black mb-2"></h2>
+        <p id="modalProjDesc" class="text-gray-600 leading-relaxed"></p>
+    </div>
+</div>
+
+<script>
+const projects = {
+    "oraimo": {
+        title: "Oraimo Nova2 Smart Watch Redesign",
+        desc: `
+            <h2><b>Objective</b></h2>
+           <p>Recreate and reinterpret the Oraimo Nova2 Smart Watch advert while maintaining brand consistency, clarity, and a modern tech-forward feel.
+            </p>
+
+            <br>
+
+            <h2><b>Creative Approach</b></h2>
+            <ul>
+                <li>Focused on product-centric composition with lifestyle integration</li>
+                <li>Clean background and bold typography to enhance product visibility</li>
+                <li>Use brand-alighned green accents to reinforce identity</li>
+                <li>Combined realism and minimalism for a modern commercial look</li>
+            </ul>
+
+            <br>
+
+            <h2><b>Tools</b></h2>
+            <P>
+                Adobe Photoshop CC
+            </P>
+
+            <br>
+
+            <h2>Outcome</h2>
+            <p>
+                A clean professional concept advert that highlights the smartwatch's lifestyle appeal and usability, demonstrating strong brand adaptation and product-focused design execution.
+            </p>
+
+            <br>
+
+            <h2><b>Category</b></h2>
+            <p>
+                Product Design
+            </p>
+        `,
+        images: [
+            "images/advertCase-copy.jpg",
+            "images/Nova2Advert-copy.jpg"
+        ]
+    },
+
+    "project2": {
+        title: "MBO-IMO'25 Wedding Creative Case Study",
+        desc: `
+            <h2><b>Objective</b></h2>
+            <ul>
+                <li>Celebrate the couple with a culturally authentic visual</li>
+                <li>Create a bold, memorable announcement design</li>
+                <li>Balance African heritage with modern design aesthetics</li>
+                <li>Ensure strong readability and visual hierarchy across platforms</li>
+            </ul>
+
+            <br>
+
+            <h2><b>Creative Direction</b></h2>
+            <p>
+                The design draws heavily from African cultural identity through traditional attire,
+                rich textile-inspired patterns, and warm earthly tones. A central hero composition
+                establishes emotional focus, while repeated scaled portraits add depth, rhythm,
+                and a sense of celebration.
+            </p>
+
+            <br>
+
+            <h3><b>Design Highlights</b></h3>
+            <ul>
+                <li><b>Color Palette:</b> Warm browns and oranges with white and gold accents for contrast</li>
+                <li><b>Typography:</b> Bold sans-serif for authority, paired with script typography for a refined celebratory touch</li>
+                <li><b>Layout:</b> Centralized hero layout with layered repetition to enhance storytelling without clutter</li>
+            </ul>
+
+            <br>
+
+            <h3><b>Tools & Techniques</b></h3>
+            <ul>
+                <li>Adobe Photoshop</li>
+                <li>Photo composition and retouching</li>
+                <li>Advanced masking and blending</li>
+                <li>Professional color grading</li>
+            </ul>
+
+            <br>
+
+            <h3><b>Outcome</b></h3>
+            <p>
+                The final creative successfully captured the cultural essence of the event,
+                delivered a premium visual identity, and met both emotional and aesthetic goals.
+                It stands as a strong example of my ability to combine cultural storytelling
+                with modern graphic design principles.
+            </p>
+        `,
+        images: ["images/pastorcandy-copy.jpg"]
+    },
+
+    "project3": {
+        title: "Victory Homecoming - Event Poster Design",
+        desc: `
+        <h3><b>Objective</b><h3>    
+        <p>
+                Design a high-energy promotional poster for <b>Victory Homecoming</b>, an entertainment event celebrating 13 reality-TV housemates returning with victory. The design needed to feel bold, celebratory, and star-studded while capturing nightlife excitement.
+            </p>
+             <br>
+        <h3><b>Creative Approach</b></h3>
+        <p>
+            <ul>
+                <li>Used a strong central hero composition to anchor attention</li>
+                <li>Layered multiple celebrity portraits to communicate scale and prestige</li>
+                <li>Applied dramatic lighting, warm highlights, and contrast to enhance nightlife energy</li>
+                <li>Clear typography hierarchy to balance heavy visuals with readability</li>
+                </ul>
+            </p>
+            <br>
+            <h3><b>Tools</b></h3>
+            <p>Adobe Photoshop</p>
+            <br>
+            <h3><b>Outcome</b></h3>
+            <p>
+                A visually striking event poster that communicates excitement, celebrity presence, and premium entertainment value—optimized for digital promotion and social media engagement.
+                </p>
+        `,
+        images: ["images/homecoming copyNew-copy.jpg", "images/HomeComingfaceCard.jpg", "images/homecominggyration-copy.jpg", "images/HomecomingShadowCard-copy.jpg", "images/HomeComingSponsorship-copy2.jpg"]
+    },
+
+    "project4": {
+        title: "Personal Portfolio",
+        desc: `
+        <h3><b>Objective</b><h3>    
+        <p>
+                Design a high-energy promotional poster for <b>Victory Homecoming</b>, an entertainment event celebrating 13 reality-TV housemates returning with victory. The design needed to feel bold, celebratory, and star-studded while capturing nightlife excitement.
+            </p>
+             <br>
+        <h3><b>Creative Approach</b></h3>
+        <p>
+            <ul>
+                <li>Used a strong central hero composition to anchor attention</li>
+                <li>Layered multiple celebrity portraits to communicate scale and prestige</li>
+                <li>Applied dramatic lighting, warm highlights, and contrast to enhance nightlife energy</li>
+                <li>Clear typography hierarchy to balance heavy visuals with readability</li>
+                </ul>
+            </p>
+            <br>
+            <h3><b>Tools</b></h3>
+            <p>Adobe Photoshop</p>
+            <br>
+            <h3><b>Outcome</b></h3>
+            <p>
+                A visually striking event poster that communicates excitement, celebrity presence, and premium entertainment value—optimized for digital promotion and social media engagement.
+                </p>
+        `,
+        images: ["images/herosection.png", "images/projectsec.png", "images/servicessec.png",]
+    }
+};
+
+
+    let activeProjImages = [];
+    let modalImgIndex = 0;
+
+    function openProject(key) {
+        const p = projects[key];
+        activeProjImages = p.images;
+        modalImgIndex = 0;
+        
+        document.getElementById('modalFullImg').src = activeProjImages[0];
+        document.getElementById('modalProjTitle').innerText = p.title;
+        document.getElementById('modalProjDesc').innerHTML = p.desc;
+
+        
+        // Show controls only if there's more than one image
+        document.getElementById('modalControls').style.display = activeProjImages.length > 1 ? 'flex' : 'none';
+        
+        document.getElementById('projModal').style.display = 'flex';
+    }
+
+    function changeModalImg(step) {
+        modalImgIndex = (modalImgIndex + step + activeProjImages.length) % activeProjImages.length;
+        document.getElementById('modalFullImg').src = activeProjImages[modalImgIndex];
+    }
+
+    function closeProjModal() { document.getElementById('projModal').style.display = 'none'; }
+</script>
+
+<style>
+    .journey-section {
+        padding: 100px 50px;
+        background-color: #FFFFFF; /* Main background remains white */
+        max-width: 1200px;
+        margin: 0 auto;
+        text-align: center;
+    }
+
+    .journey-header h2 {
+        color: var(--accent-gold);
+        font-size: 1.1rem;
+        font-weight: bold;
+        margin-bottom: 10px;
+    }
+
+    .journey-header h1 {
+        font-size: 3rem;
+        font-weight: 900;
+        margin-bottom: 60px;
+        color: #1a1a1a;
+    }
+
+    .journey-header h1 span {
+        color: var(--accent-gold);
+    }
+
+    .journey-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 40px;
+        text-align: left;
+    }
+
+    .journey-card {
+        background-color: #F9F9F9; /* Subtle grey card background as seen in image */
+        border-radius: 24px;
+        padding: 40px;
+        border: 1px solid #F0F0F0;
+    }
+
+    .card-title-area {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        margin-bottom: 30px;
+    }
+
+    .journey-icon-circle {
+        background-color: var(--accent-gold);
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: black;
+        font-size: 1.2rem;
+    }
+
+    .card-title-area h2 {
+        font-size: 1.8rem;
+        font-weight: 800;
+        color: #1a1a1a;
+    }
+
+    /* Timeline Items */
+    .timeline-item {
+        margin-bottom: 30px;
+        position: relative;
+        padding-left: 20px;
+        border-left: 1px solid #E0E0E0;
+    }
+
+    .timeline-item:last-child {
+        margin-bottom: 0;
+    }
+
+    .timeline-date {
+        font-size: 0.9rem;
+        font-weight: 700;
+        color: #999;
+        margin-bottom: 5px;
+    }
+
+    .timeline-org {
+        font-size: 1.3rem;
+        font-weight: 800;
+        color: #1a1a1a;
+        margin-bottom: 2px;
+    }
+
+    .timeline-role {
+        font-size: 1rem;
+        color: #666;
+        font-weight: 500;
+    }
+    /* ===== MOBILE RESPONSIVENESS FOR JOURNEY SECTION ===== */
+@media (max-width: 992px) {
+    .journey-section {
+        padding: 60px 20px;
+    }
+
+    .journey-header h1 {
+        font-size: 2.2rem; /* Shrink header for mobile */
+        margin-bottom: 40px;
+    }
+
+    .journey-grid {
+        /* Stack the two columns into one */
+        grid-template-columns: 1fr; 
+        gap: 30px;
+    }
+
+    .journey-card {
+        padding: 30px 20px; /* Slightly tighter padding on mobile */
+    }
+
+    .card-title-area h2 {
+        font-size: 1.5rem; /* Scale down the internal card titles */
+    }
+
+    .timeline-org {
+        font-size: 1.1rem; /* Ensure organization names don't wrap awkwardly */
+    }
+}
+</style>
+
+<section class="journey-section reveal">
+    <div class="journey-header">
+        <h2>— Education & Work</h2>
+        <h1>My <span>Academic and Professional</span> Journey</h1>
+    </div>
+
+    <div class="journey-grid">
+        <div class="journey-card">
+            <div class="card-title-area">
+                <div class="journey-icon-circle"><i class="fa-solid fa-graduation-cap"></i></div>
+                <h2>Education</h2>
+            </div>
+
+            <div class="timeline-item">
+                <div class="timeline-date">2025 - 2026</div>
+                <div class="timeline-org">Microsoft/LinkedIn Learning</div>
+                <div class="timeline-role">AI Prompt Engeneering</div>
+               
+            </div>
+
+            <div class="timeline-item">
+                <div class="timeline-date">2018 - 2023</div>
+                <div class="timeline-org">University of Uyo, Uyo Akwa Ibom State</div>
+                <div class="timeline-role">Bachelor of Science (Bsc) in Psychology</div>
+            </div>
+
+            <div class="timeline-item">
+                 <div class="timeline-date">2010 - 2016</div>
+                <div class="timeline-org">Community Secondary School, Nsude, Enugu State</div>
+                <div class="timeline-role">WAEC</div>
+            </div>
+        </div>
+
+        <div class="journey-card">
+            <div class="card-title-area">
+                <div class="journey-icon-circle"><i class="fa-solid fa-briefcase"></i></div>
+                <h2>Work Experience</h2>
+            </div>
+
+            <div class="timeline-item">
+                <div class="timeline-date">2025 - Date</div>
+                <div class="timeline-org">Self Employed</div>
+                <div class="timeline-role">AI Prompt Engineer/ Freelance AI Specialist</div>
+            </div>
+
+            <div class="timeline-item">
+                <div class="timeline-date">2018 - Date</div>
+                <div class="timeline-org">TilityGrafix</div>
+                <div class="timeline-role">CEO</div>
+            </div>
+
+            <div class="timeline-item">
+                <div class="timeline-date">2024 - 2025</div>
+                <div class="timeline-org">Bubbly Homes LTD</div>
+                <div class="timeline-role">General Manager</div>
+            </div>
+
+             <div class="timeline-item">
+                <div class="timeline-date">2017 - 2018</div>
+                <div class="timeline-org">HI-TECH Security, Nigerian Breweries PLC. Ama.</div>
+                <div class="timeline-role">Security Operative</div>
+            </div>
+
+             <div class="timeline-item">
+                <div class="timeline-date">2016 - 2017</div>
+                <div class="timeline-org">Arizona Computer Center</div>
+                <div class="timeline-role">Graphic Designer/Instructor</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+    .pricing-wrapper {
+        background-color: #FFFFFF; /* White consistent background */
+        padding: 60px 20px 100px;
+    }
+
+    .pricing-container {
+        background-color: #1B3C2D; /* Green resting on white */
+        max-width: 1200px;
+        margin: 0 auto;
+        border-radius: 40px;
+        padding: 60px 50px;
+        color: white;
+    }
+
+    .pricing-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-end;
+        margin-bottom: 50px;
+    }
+
+    .pricing-header h1 {
+        font-size: 3rem;
+        font-weight: 900;
+    }
+
+    .pricing-header h1 span {
+        color: var(--accent-gold);
+    }
+
+    /* Get Started Button */
+    .btn-get-started {
+        background: transparent;
+        border: 2px solid white;
+        color: white;
+        padding: 5px 5px 5px 25px;
+        border-radius: 999px;
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        text-decoration: none;
+        font-weight: 600;
+        transition: 0.3s;
+    }
+
+    .btn-get-started .arrow-bg {
+        background: var(--accent-gold);
+        color: black;
+        width: 35px;
+        height: 35px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    /* Pricing Grid */
+    .pricing-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 25px;
+    }
+
+    .price-card {
+        background: rgba(255, 255, 255, 0.05); /* Transparent green look */
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 30px;
+        padding: 40px 30px;
+        transition: 0.3s;
+    }
+
+    .price-card.active {
+        background: var(--accent-gold);
+        color: black;
+    }
+
+    .card-top {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 20px;
+    }
+
+    .card-top h3 { font-size: 1.5rem; font-weight: 800; }
+    
+    .price-tag { font-size: 2.5rem; font-weight: 900; margin-bottom: 30px; }
+    .price-tag span { font-size: 1rem; opacity: 0.7; font-weight: 500; }
+
+    .feature-list { list-style: none; padding: 0; }
+    .feature-list li {
+        margin-bottom: 15px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        font-size: 0.95rem;
+    }
+
+    .feature-list i {
+        color: var(--accent-gold);
+        font-size: 0.8rem;
+    }
+
+    .active .feature-list i { color: black; }
+</style>
+
+<div class="pricing-wrapper">
+    <div class="pricing-container">
+        <div class="pricing-header">
+            <div>
+                <p style="color: var(--accent-gold); font-weight: bold; margin-bottom: 10px;">— Pricing Table</p>
+                <h1>My <span>Pricing Model</span></h1>
+            </div>
+            <a href="#contact" class="btn-get-started">
+                Get Started <div class="arrow-bg"><i class="fa-solid fa-arrow-right"></i></div>
+            </a>
+        </div>
+
+        <div class="pricing-grid">
+            <div class="price-card">
+                <div class="card-top">
+                    <h3>Flyers</h3>
+                    <div class="arrow-up"><i class="fa-solid fa-arrow-up-right-from-square"></i></div>
+                </div>
+                <div class="price-tag">$60 <span>/ Design</span></div>
+                <ul class="feature-list">
+                    <li><i class="fa-solid fa-circle-check"></i> Birthday Design</li>
+                    <li><i class="fa-solid fa-circle-check"></i> Business Flyer</li>
+                    <li><i class="fa-solid fa-circle-check"></i> Event Design</li>
+                    <li><i class="fa-solid fa-circle-check"></i> New Month Design</li>
+                    <li><i class="fa-solid fa-circle-check"></i> Social Media Content</li>
+                </ul>
+            </div>
+
+            <div class="price-card active">
+                <div class="card-top">
+                    <h3>Logo</h3>
+                    <div class="arrow-up"><i class="fa-solid fa-arrow-up-right-from-square"></i></div>
+                </div>
+                <div class="price-tag">$300 <span>/ Branding</span></div>
+                <ul class="feature-list">
+                    <li><i class="fa-solid fa-circle-check"></i> Business Logo</li>
+                    <li><i class="fa-solid fa-circle-check"></i> Product Branding</li>
+                    <li><i class="fa-solid fa-circle-check"></i> Typography & Color</li>
+                    <li><i class="fa-solid fa-circle-check"></i> Cartoon/Comics</li>
+                    <li><i class="fa-solid fa-circle-check"></i> Unlimited Revisions</li>
+                </ul>
+            </div>
+
+            <div class="price-card">
+                <div class="card-top">
+                    <h3>Flex</h3>
+                    <div class="arrow-up"><i class="fa-solid fa-arrow-up-right-from-square"></i></div>
+                </div>
+                <div class="price-tag">$120 <span>/ Project</span></div>
+                <ul class="feature-list">
+                    <li><i class="fa-solid fa-circle-check"></i> Large Format Design</li>
+                    <li><i class="fa-solid fa-circle-check"></i> Wedding IV Design</li>
+                    <li><i class="fa-solid fa-circle-check"></i> Signage & Billboard</li>
+                    <li><i class="fa-solid fa-circle-check"></i> High Res Print Files</li>
+                    <li><i class="fa-solid fa-circle-check"></i> Priority Support</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .contact-section {
+        padding: 100px 50px;
+        background-color: #FFFFFF;
+        max-width: 1200px;
+        margin: 0 auto;
+        display: grid;
+        grid-template-columns: 1fr 1.5fr;
+        gap: 80px;
+    }
+
+    /* Left Side Info */
+    .contact-info h2 { color: var(--accent-gold); font-weight: bold; margin-bottom: 10px; }
+    .contact-info h1 { font-size: 3.2rem; font-weight: 900; line-height: 1.1; margin-bottom: 25px; }
+    .contact-info h1 span { color: var(--accent-gold); }
+    .contact-desc { color: #666; margin-bottom: 40px; line-height: 1.6; }
+
+    .contact-method {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+        margin-bottom: 25px;
+        text-decoration: none;
+        color: #1a1a1a;
+        transition: 0.3s;
+    }
+
+    .contact-method:hover { color: var(--accent-gold); }
+
+    .method-icon {
+        width: 50px;
+        height: 50px;
+        background: var(--accent-gold);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.2rem;
+        color: #1a1a1a;
+    }
+
+    /* Right Side Form */
+    .contact-form {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+        position: relative;
+    overflow: hidden;
+    padding: 40px !important; /* Ensures space inside the glass box */
+    border-radius: 20px !important;
+    
+    /* THE BACKGROUND: Image + Forest Green Overlay */
+    background: linear-gradient(rgba(0, 43, 0, 0.7), rgba(58, 59, 58, 0.7)), 
+                url('images/havework-copy.jpg') no-repeat center center !important;
+    background-size: cover !important;
+    
+    /* THE GLASS EFFECT: Blur */
+    backdrop-filter: blur(15px) !important;
+    -webkit-backdrop-filter: blur(15px);
+    
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    }
+
+    .form-group { display: flex; flex-direction: column; gap: 8px; }
+    .form-group.full-width { grid-column: span 2; }
+
+    .form-group label { font-weight: 700; font-size: 0.9rem; color: #eee; }
+    
+    /* 1. Base Transition for Smoothness */
+.form-group input, 
+.form-group select, 
+.form-group textarea {
+    transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1) !important;
+    position: relative;
+    z-index: 1;
+}
+
+    /* 2. Hover Effect: The "Pop" */
+.form-group input:hover, 
+.form-group select:hover, 
+.form-group textarea:hover {
+    transform: translateY(-4px) !important; /* Lifts the input */
+    background-color: rgba(255, 255, 255, 0.25) !important; /* Slightly brighter glass */
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3) !important; /* Depth shadow */
+    z-index: 2; /* Ensures the shadow is above other inputs */
+}
+
+/* 3. Focus Effect: Gold Border & Glow */
+.form-group input:focus, 
+.form-group select:focus, 
+.form-group textarea:focus {
+    transform: translateY(-4px) !important; /* Maintains lift while typing */
+    border-color: var(--accent-gold) !important;
+    background-color: rgba(255, 255, 255, 0.3) !important; /* Even brighter when active */
+    box-shadow: 0 0 0 4px rgba(212, 175, 55, 0.15), 0 10px 20px rgba(0, 0, 0, 0.3) !important;
+    outline: none !important;
+}
+.form-group textarea {
+    resize: vertical;
+}
+    .contact-form input, 
+.contact-form select, 
+.contact-form textarea {
+    background-color: rgba(255, 255, 255, 0.15) !important; /* Light white frosting */
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+    color: #ffffff !important; /* Input text is pure white */
+    border-radius: 8px !important;
+    padding: 15px !important;
+}
+
+/* THE PLACEHOLDER: Black with low opacity */
+.contact-form input::placeholder,
+.contact-form textarea::placeholder {
+    color: rgba(255, 255, 255, 0.404) !important; 
+}
+
+/* Ensure dropdown options are readable (browsers often ignore transparency here) */
+.contact-form select option {
+    background-color: var(--accent-gold) !important; /* Solid forest green for the list */
+    color: rgb(32, 32, 32) !important;
+}
+
+    /* Submit Button styled as per image */
+    .btn-submit {
+        grid-column: span 2;
+        width: fit-content;
+        background: var(--nav-bg) !important;
+        color: white;
+        padding: 5px 5px 5px 25px;
+        border-radius: 999px;
+        border: none;
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        font-weight: 700;
+        cursor: pointer;
+        margin-top: 10px;
+    }
+
+    .submit-arrow {
+        background: var(--accent-gold);
+        color: black;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    @media (max-width: 992px) {
+    .contact-section {
+        grid-template-columns: 1fr !important; 
+        padding: 60px 20px !important;
+        gap: 50px !important;
+    }
+
+    .contact-info {
+        text-align: center !important;
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+    }
+
+    /* 1. THE BLOCK CENTERER */
+    /* This centers the group but keeps the internal content left-aligned */
+    .contact-methods-container { /* If you have a wrapper, apply this. If not, use the code below */
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+    }
+
+    /* 2. THE ICON ALIGNMENT FIX */
+    .contact-method {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: flex-start !important; /* Forces items to the left of their box */
+        width: 100% !important;
+        text-align: left !important;
+        max-width: 320px !important; /* Limits width so it stays 'centered' as a block */
+        margin: 0 auto 25px !important; /* Centers the 320px block on the screen */
+        gap: 20px !important;
+    }
+
+    /* This is the key: Force icons to occupy the same amount of horizontal space */
+    .method-icon {
+        flex-shrink: 0 !important; /* Prevents icon from squishing */
+        width: 50px !important;    /* Matches your original CSS */
+        height: 50px !important;
+        display: flex !important;
+        justify-content: center !important;
+        align-items: center !important;
+    }
+
+    /* 3. THE FORM (Unchanged from your original style) */
+    .contact-form {
+        grid-template-columns: 1fr !important; 
+        width: 100% !important;
+        gap: 20px !important;
+    }
+
+    .form-group.full-width {
+        grid-column: span 1 !important;
+    }
+
+    .btn-submit {
+        grid-column: span 1 !important;
+        width: 100% !important; 
+        justify-content: space-between !important;
+    }
+}
+    
+</style>
+
+<section id="contact" class="contact-section reveal">
+    <div class="contact-info">
+        <h2>— Contact Us</h2>
+        <h1>Let's Talk for Your <span>Next Projects</span></h1>
+        <p class="contact-desc">Ready to bring your ideas to life? Reach out through any of these channels or fill the form.</p>
+
+        <a href="tel:+2349068824425" class="contact-method">
+            <div class="method-icon"><i class="fa-solid fa-phone"></i></div>
+            <div><strong>Phone</strong><br>+234 906 882 4425</div>
+        </a>
+
+        <a href="mailto:franktilityf5@gmail.com" class="contact-method">
+            <div class="method-icon"><i class="fa-solid fa-envelope"></i></div>
+            <div><strong>Email</strong><br>franktilityf5@gmail.com</div>
+        </a>
+
+        <a href="https://www.linkedin.com/in/franktility747?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app" target="_blank" class="contact-method">
+            <div class="method-icon"><i class="fa-brands fa-linkedin-in"></i></div>
+            <div><strong>LinkedIn</strong><br>Ezechi Franklin</div>
+        </a>
+
+        <a href="https://www.google.com/maps?q=Your+Address+Here" target="_blank" class="contact-method">
+            <div class="method-icon"><i class="fa-solid fa-location-dot"></i></div>
+            <div><strong>Address</strong><br>04 Ogbaru Crescent, Ind. Layout Enugu, Enugu state, Nigeria</div>
+        </a>
+    </div>
+
+    <form class="contact-form reveal" id="whatsappForm">
+        <div class="form-group">
+            <label>Your Name *</label>
+            <input type="text" id="name" placeholder="Ex. Ozoani Nneamaka" required>
+        </div>
+        <div class="form-group">
+            <label>WhatsApp Number *</label>
+            <input type="text" id="whatsapp" placeholder="Ex. +234..." required>
+        </div>
+        <div class="form-group">
+            <label>Budget Range (USD) *</label>
+            <select id="budget">
+                <option value="Not Specified">Select Range</option>
+                <option value="50-200">$50 - $200</option>
+                <option value="200-1000">$200 - $1,000</option>
+                <option value="1000+">$1,000+</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label>I'm Interested In *</label>
+            <select id="service">
+                <option value="General Inquiry">Select Service</option>
+                <option value="Graphic Design">Graphic Design</option>
+                <option value="AI Prompt Engineering">AI Prompting</option>
+                <option value="Web Design">Web Design</option>
+                <option value="Real Estate">Real Estate</option>
+            </select>
+        </div>
+        <div class="form-group full-width">
+            <label>Your Message *</label>
+            <textarea id="message" rows="5" placeholder="Enter here..."></textarea>
+        </div>
+
+        <button type="submit" class="btn-submit">
+            Submit <div class="submit-arrow"><i class="fa-solid fa-arrow-right"></i></div>
+        </button>
+    </form>
+</section>
+
+<script>
+    document.getElementById('whatsappForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        // My WhatsApp Number (International format without +)
+        const myNumber = "2349068824425"; 
+
+        // Collect Form Data
+        const name = document.getElementById('name').value;
+        const phone = document.getElementById('whatsapp').value;
+        const budget = document.getElementById('budget').value;
+        const service = document.getElementById('service').value;
+        const msg = document.getElementById('message').value;
+
+        // Construct the Message
+        const text = `*New Project Inquiry*%0A%0A` +
+                     `*Name:* ${name}%0A` +
+                     `*WhatsApp:* ${phone}%0A` +
+                     `*Service:* ${service}%0A` +
+                     `*Budget:* ${budget}%0A` +
+                     `*Message:* ${msg}`;
+
+        // Open WhatsApp
+        window.open(`https://wa.me/${myNumber}?text=${text}`, '_blank');
+    });
+</script>
+
+<style>
+    .blog-section {
+        padding: 100px 50px;
+        background-color: #FFFFFF; /* Consistent white background */
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    .blog-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-end;
+        margin-bottom: 50px;
+    }
+
+    .blog-header h2 { color: var(--accent-gold); font-weight: bold; margin-bottom: 10px; }
+    .blog-header h1 { font-size: 3rem; font-weight: 900; color: #1a1a1a; line-height: 1.1; }
+    .blog-header h1 span { color: var(--accent-gold); }
+
+    /* View All Blogs Button linked to LinkedIn Profile */
+    .btn-view-all {
+        background: var(--nav-bg);
+        color: white;
+        padding: 5px 5px 5px 25px;
+        border-radius: 999px;
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        text-decoration: none;
+        font-weight: 700;
+        transition: 0.3s;
+    }
+
+    .btn-view-all .arrow-icon {
+        background: var(--accent-gold);
+        color: black;
+        width: 35px;
+        height: 35px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    /* Blog Grid */
+    .blog-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 30px;
+    }
+
+    .blog-card {
+        background: #fff;
+        transition: 0.3s;
+    }
+
+    .blog-img-wrapper {
+        width: 100%;
+        height: 250px;
+        border-radius: 20px;
+        overflow: hidden;
+        margin-bottom: 20px;
+        position: relative;
+    }
+
+    .blog-img-wrapper img { width: 100%; height: 100%; object-fit: cover; }
+
+    /* Single Gold Button for Genre */
+    .blog-genre-tag {
+        background: var(--accent-gold);
+        color: black;
+        padding: 6px 15px;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: 700;
+        display: inline-block;
+        margin-bottom: 15px;
+        text-decoration: none;
+    }
+
+    .blog-card h3 {
+        font-size: 1.4rem;
+        font-weight: 800;
+        color: #1a1a1a;
+        margin-bottom: 12px;
+        line-height: 1.3;
+    }
+
+    .blog-excerpt {
+        color: #666;
+        font-size: 0.95rem;
+        line-height: 1.6;
+        margin-bottom: 20px;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+
+    .read-more-link {
+        color: #1a1a1a;
+        font-weight: 800;
+        text-decoration: underline;
+        text-underline-offset: 5px;
+        transition: 0.3s;
+    }
+
+    .read-more-link:hover { color: var(--accent-gold); }
+</style>
+
+<section id="blogs" class="blog-section reveal">
+    <div class="blog-header">
+        <div>
+            <h2>— News & Blogs</h2>
+            <h1>Our Latest <br><span>News & Blogs</span></h1>
+        </div>
+        <a href="https://www.linkedin.com/in/franktility747?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app" target="_blank" class="btn-view-all">
+            View All Blogs <div class="arrow-icon"><i class="fa-solid fa-arrow-right"></i></div>
+        </a>
+    </div>
+
+    <div class="blog-grid">
+        <div class="blog-card">
+            <div class="blog-img-wrapper">
+                <img src="images/NoFreeDesign-copy.jpg" alt="No free design">
+            </div>
+            <div class="blog-genre-tag">Graphic Design</div> <h3>Graphic Designing is a preofession, not Charity</h3>
+            <p class="blog-excerpt">Exploring how clients undermine the effort, resource and creativity put in place to serve them and their brand better</p>
+            <a href="https://www.linkedin.com/posts/franktility747_nofreedesign-respectcreatives-designiswork-activity-7416883337757315073-dLj_?utm_source=share&utm_medium=member_desktop&rcm=ACoAADBZEFQBHpIW42EEhkxLNQKJDpiXhCoO0a4" target="_blank" class="read-more-link">Read More</a>
+        </div>
+
+        <div class="blog-card">
+            <div class="blog-img-wrapper">
+                <img src="images/WEEKEND-copy.jpg" alt="WEEKEND GIST">
+            </div>
+            <div class="blog-genre-tag">Weekend Gist</div>
+            <h3>THE DILEMMA: WHAT THE CLIENT WANTS vs YOUR STANDARD AS A GRAPHIC DESIGNER</h3>
+            <p class="blog-excerpt">Every graphic designer knows this struggle too well.
+
+Client: “I want it bold, colorful, with 7 fonts… and make the logo bigger.”
+Designer (internally): “My brand standards just fainted.”</p>
+            <a href="https://www.linkedin.com/posts/franktility747_graphicdesign-designlife-weekendgist-activity-7418246856079548416-mSVW?utm_source=share&utm_medium=member_desktop&rcm=ACoAADBZEFQBHpIW42EEhkxLNQKJDpiXhCoO0a4" target="_blank" class="read-more-link">Read More</a>
+        </div>
+
+        <div class="blog-card">
+            <div class="blog-img-wrapper">
+                <img src="images/doitCheaper.jpg" alt="Real Estate Visualization">
+            </div>
+            <div class="blog-genre-tag">Talk for Creatives</div>
+            <h3>I KNOW WHO CAN DO IT CHEAPER</h3>
+            <p class="blog-excerpt">Normalize paying for quality today and your brand will thank you later.</p>
+            <a href="https://www.linkedin.com/posts/franktility747_designmatters-payforquality-branding-activity-7420399381369065473-zXfZ?utm_source=share&utm_medium=member_desktop&rcm=ACoAADBZEFQBHpIW42EEhkxLNQKJDpiXhCoO0a4" target="_blank" class="read-more-link">Read More</a>
+        </div>
+    </div>
+</section>
+
+<style>
+/* --- 1. HEADER (RESTORING YOUR ORIGINAL STYLE) --- */
+.testi-header {
+    text-align: center;
+    margin-bottom: 50px;
+}
+.testi-header p {
+    color: #FFB800;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+.testi-header h1 {
+    font-size: 3rem;
+    font-weight: 900;
+    line-height: 1.2;
+    color: #1a1a1a;
+}
+.testi-header h1 span { color: #FFB800; }
+
+/* --- 2. THE SLIDER ENGINE --- */
+.testimonials-section {
+    padding: 80px 0;
+    background-color: #FFFFFF;
+    overflow: hidden; /* Keeps the page from scrolling horizontally */
+}
+
+.testi-stage {
+    width: 100%;
+    position: relative;
+    display: flex;
+    justify-content: flex-start; /* Math works better from the left */
+}
+
+.testi-track {
+    display: flex;
+    transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1);
+    align-items: center;
+    padding-left: 0; /* Will be set by JS */
+}
+
+.testi-card {
+    width: 600px; 
+    margin: 0 30px; 
+    background: #FFFFFF;
+    padding: 40px;
+    border-radius: 24px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.05);
+    text-align: left;
+    
+    /* FIX: Ensure they are faint by default */
+    opacity: 0.15 !important; 
+    transform: scale(0.85);
+    transition: all 0.5s ease;
+    flex-shrink: 0;
+}
+
+/* FIX: Only the active card gets full visibility */
+.testi-card.active {
+    opacity: 1 !important;
+    transform: scale(1) !important;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.12);
+}
+
+/* Internal Card Details */
+.stars { color: #FFB800; margin-bottom: 20px; font-size: 1.2rem; }
+.testi-text { color: #555; line-height: 1.8; font-size: 1.1rem; margin-bottom: 30px; }
+.testi-user { display: flex; align-items: center; gap: 15px; }
+.user-img { width: 55px; height: 55px; border-radius: 50%; overflow: hidden; background: #eee; }
+.user-img img { width: 100%; height: 100%; object-fit: cover; }
+
+/* Controls */
+.testi-controls { display: flex; justify-content: center; gap: 20px; margin-top: 50px; }
+.ctrl-btn {
+    width: 60px; height: 60px; border-radius: 50%; border: none;
+    cursor: pointer; font-size: 1.5rem; transition: 0.3s;
+}
+.prev-btn { background: #1B3C2D; color: white; }
+.next-btn { background: #FFB800; color: black; }
+/* ===== MOBILE RESPONSIVENESS ===== */
+@media (max-width: 768px) {
+    /* Shrink the header text for smaller screens */
+    .testi-header h1 {
+        font-size: 2.2rem;
+    }
+
+    /* Adjust the card width to fit phone screens */
+    .testi-card {
+        width: 85vw; /* Card takes up 85% of the screen width */
+        margin: 0 10px; /* Smaller gaps so we can see the 'peek' of the next card */
+        padding: 25px; /* Less padding inside the card */
+    }
+
+    .testi-text {
+        font-size: 0.95rem; /* Slightly smaller text for mobile */
+        line-height: 1.6;
+    }
+
+    .testi-controls {
+        margin-top: 30px;
+    }
+    
+    .ctrl-btn {
+        width: 50px;
+        height: 50px;
+    }
+}
+</style>
+
+<section Id="testimonial" class="testimonials-section">
+    <div class="testi-header">
+        <p style="color:#FFB800; font-weight:700; text-transform: uppercase; letter-spacing: 2px;">
+            — Clients Testimonials
+        </p>
+        <h1>The Impact of My Work:<br><span>Client Testimonials</span></h1>
+    </div>
+
+    <div class="testi-stage">
+        <div class="testi-track" id="testiTrack">
+
+            <div class="testi-card">
+                <div class="stars">★★★★★ <span style="color:#000; font-weight:900;">5.0</span></div>
+                <p class="testi-text">
+                 “Working with Ezechi was seamless from start to finish. He translated our vision into a strong brand identity that elevated our presence and positioned us more professionally in the market.”
+                </p>
+                <div class="testi-user">
+                    <div class="user-img"><img src="images/EuropeTour.jpg"></div>
+                    <div>
+                        <h4 style="margin:0;">Gift Agodi C.</h4>
+                        <p style="margin:0; color:#888;">Founder, GENZ Network</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="testi-card active">
+                <div class="stars">★★★★★ <span style="color:#000; font-weight:900;">5.0</span></div>
+                <p class="testi-text">
+                   “Ezechi delivered clean, modern designs that aligned perfectly with our brand values. His attention to detail and ability to work remotely made collaboration effortless despite the distance.”
+                </p>
+                <div class="testi-user">
+                    <div class="user-img"><img src="images/mydailypasto.jpg"></div>
+                    <div>
+                        <h4 style="margin:0;">Albert</h4>
+                        <p style="margin:0; color:#888;">CEO,MyDaily Pasto (Portugal)</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="testi-card">
+                <div class="stars">★★★★★ <span style="color:#000; font-weight:900;">5.0</span></div>
+                <p class="testi-text">
+                   “Ezechi handled all the flyers and billboards for my homecoming with excellence. The designs were bold, consistent, and highly engaging—contributing significantly to the visibility and success of the event.”
+                </p>
+                <div class="testi-user">
+                    <div class="user-img"><img src="images/HomecomingShadowCard-copy.jpg"></div>
+                    <div>
+                        <h4 style="margin:0;">Victory</h4>
+                        <p style="margin:0; color:#888;">BBNaija Season 10 Housemate</p>
+                    </div>
+                </div>
+            </div>
+
+             <div class="testi-card">
+                <div class="stars">★★★★★ <span style="color:#000; font-weight:900;">5.0</span></div>
+                <p class="testi-text">
+                    “Ezechi understands branding beyond aesthetics. He created visuals that were not only attractive but also strategic, helping us communicate clearly with our audience.”
+                </p>
+                <div class="testi-user">
+                    <div class="user-img"><img src="images/colortribe.jpg"></div>
+                    <div>
+                        <h4 style="margin:0;">Joshua Enebe</h4>
+                        <p style="margin:0; color:#888;">CEO, Color Tribe</p>
+                    </div>
+                </div>
+            </div>
+
+             <div class="testi-card">
+                <div class="stars">★★★★★ <span style="color:#000; font-weight:900;">5.0</span></div>
+                <p class="testi-text">
+                    “As both a designer and instructor, Ezechi consistently delivered high-quality creative work while mentoring students effectively. His professionalism and design expertise added real value to our organization.”
+                </p>
+                <div class="testi-user">
+                    <div class="user-img"><img src="images/ARINZE.jpg"></div>
+                    <div>
+                        <h4 style="margin:0;">Arinze Ngwu</h4>
+                        <p style="margin:0; color:#888;">CEO,Arizona Computer Center</p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="testi-controls">
+        <button class="ctrl-btn prev-btn" onclick="rotate(-1)">←</button>
+        <button class="ctrl-btn next-btn" onclick="rotate(1)">→</button>
+    </div>
+</section>
+
+<script>
+    let activeIndex = 0;
+
+    function rotate(direction) {
+        const track = document.getElementById('testiTrack');
+        const cards = document.querySelectorAll('.testi-card');
+        
+        // 1. Update active index
+        activeIndex += direction;
+        if (activeIndex < 0) activeIndex = 0;
+        if (activeIndex >= cards.length) activeIndex = cards.length - 1;
+
+        // 2. Update Active Class
+        cards.forEach((card, i) => {
+            card.classList.toggle('active', i === activeIndex);
+        });
+
+        // 3. THE DYNAMIC MATH FIX
+        // Get the actual width of a card and its margin at the current screen size
+        const cardStyle = window.getComputedStyle(cards[0]);
+        const cardWidth = parseFloat(cardStyle.width);
+        const cardMargin = parseFloat(cardStyle.marginLeft) + parseFloat(cardStyle.marginRight);
+        const fullSpace = cardWidth + cardMargin;
+        
+        // Find current screen center
+        const screenCenter = window.innerWidth / 2;
+        
+        // Calculate the center-point offset
+        const initialOffset = screenCenter - (cardWidth / 2) - parseFloat(cardStyle.marginLeft);
+
+        // Move the track
+        const moveX = initialOffset - (activeIndex * fullSpace);
+
+        track.style.transform = `translateX(${moveX}px)`;
+    }
+
+    // Call once when the page loads
+    window.addEventListener('load', () => rotate(0));
+
+    // RE-CENTER ON RESIZE (Vital for mobile orientation changes)
+    let resizeTimer;
+    window.addEventListener('resize', () => {
+        clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(() => {
+            rotate(0);
+        }, 100);
+    });
+</script>
+
+<style>
+    .faq-section {
+        background-color: #1B3C2D; /* Forest Green background */
+        padding: 100px 20px;
+        color: white;
+        text-align: center;
+    }
+
+    .faq-header h2 { color: #FFB800; font-weight: bold; margin-bottom: 10px; }
+    .faq-header h1 { font-size: 3rem; font-weight: 900; margin-bottom: 50px; }
+    .faq-header h1 span { color: #FFB800; }
+
+    .faq-container {
+        max-width: 900px;
+        margin: 0 auto;
+        text-align: left;
+    }
+
+    /* Accordion Styles */
+    .faq-item {
+        background: rgba(255, 255, 255, 0.05); /* Subtle transparent layer */
+        border-radius: 12px;
+        margin-bottom: 15px;
+        overflow: hidden;
+        transition: 0.3s;
+    }
+
+    .faq-question {
+        padding: 20px 30px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        cursor: pointer;
+        font-weight: 700;
+        font-size: 1.1rem;
+    }
+
+    .faq-answer {
+        max-height: 0;
+        padding: 0 30px;
+        background: #FFB800; /* Gold background for active answer */
+        color: #1a1a1a;
+        transition: 0.4s ease-out;
+    }
+
+    /* Active State */
+    .faq-item.active {
+        background: #FFB800;
+        color: #1a1a1a;
+    }
+
+    .faq-item.active .faq-answer {
+        max-height: 200px; /* Adjust based on content */
+        padding: 10px 30px 30px;
+    }
+
+    .toggle-icon { font-size: 1.5rem; font-weight: 300; }
+
+    /* Service Marquee at the base */
+    .service-marquee {
+        background: #FFB800; /* Gold rectangle base */
+        padding: 20px 0;
+        overflow: hidden;
+        white-space: nowrap;
+        display: flex;
+        align-items: center;
+    }
+
+    .marquee-content {
+        display: inline-block;
+        animation: scroll 20s linear infinite;
+        font-weight: 900;
+        color: #1a1a1a;
+        font-size: 1.2rem;
+        text-transform: uppercase;
+    }
+
+    .marquee-content span { margin: 0 40px; }
+
+    @keyframes scroll {
+        from { transform: translateX(0); }
+        to { transform: translateX(-50%); }
+    }
+</style>
+
+<section class="faq-section reveal">
+    <div class="faq-header">
+        <h2>— FAQs</h2>
+        <h1>Questions? <span>Look here.</span></h1>
+    </div>
+
+    <div class="faq-container">
+        <div class="faq-item">
+            <div class="faq-question" onclick="toggleFAQ(this)">
+                What industries have you worked in as a product designer?
+                <span class="toggle-icon">+</span>
+            </div>
+            <div class="faq-answer">
+                I have extensive experience working across Fintech, E-commerce, Real Estate, and AI-driven technology sectors.
+            </div>
+        </div>
+
+        <div class="faq-item active">
+            <div class="faq-question" onclick="toggleFAQ(this)">
+                Can I download your resume/CV for information?
+                <span class="toggle-icon">−</span>
+            </div>
+            <div class="faq-answer">
+                Certainly! You can download my resume/CV directly from my website. It provides a comprehensive overview of my education, work experience, and design achievements.
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <div class="faq-question" onclick="toggleFAQ(this)">
+                Are you available for freelance design work?
+                <span class="toggle-icon">+</span>
+            </div>
+            <div class="faq-answer">
+                Yes, I am currently accepting new freelance projects and collaborations.
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <div class="faq-question" onclick="toggleFAQ(this)">
+                What tools do you use for your design work?
+                <span class="toggle-icon">+</span>
+            </div>
+            <div class="faq-answer">
+                I primarily use Canva, Photoshop, CorelDraw, and Gemini for my creative workflow.
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="service-marquee">
+    <div class="marquee-content">
+        <span>App Design ✱ Website Design ✱ Dashboard ✱ Wireframe ✱ AI Prompting ✱ Real Estate ✱ Graphic Design ✱ Branding</span>
+        <span>App Design ✱ Website Design ✱ Dashboard ✱ Wireframe ✱ AI Prompting ✱ Real Estate ✱ Graphic Design ✱ Branding</span>
+    </div>
+</div>
+
+<script>
+    function toggleFAQ(element) {
+        const item = element.parentElement;
+        const icon = element.querySelector('.toggle-icon');
+        
+        // Toggle Active Class
+        item.classList.toggle('active');
+        
+        // Toggle Icon
+        if (item.classList.contains('active')) {
+            icon.textContent = '−';
+        } else {
+            icon.textContent = '+';
+        }
+    }
+</script>
+
+<style>
+    /* Main Footer Container */
+    .footer-wrapper {
+        background-color: #FFFFFF; /* Consistent white background */
+        padding: 80px 50px 0;
+    }
+
+    .footer-cards-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        display: grid;
+        grid-template-columns: 1.5fr 1fr 1fr 1.2fr;
+        gap: 40px;
+        padding-bottom: 80px;
+    }
+
+    /* Logo & Social Column */
+    .footer-logo-area { display: flex; flex-direction: column; gap: 20px; }
+    
+    .footer-logo-circle {
+        width: 60px;
+        height: 60px;
+        background: var(--accent-gold);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+    }
+    .footer-logo-circle img { width: 70%; height: 70%; object-fit: contain; }
+
+    .footer-brand-name { font-size: 1.8rem; font-weight: 900; color: #1a1a1a; }
+    .footer-desc { color: #666; font-size: 0.95rem; line-height: 1.6; max-width: 250px; }
+
+    .footer-socials { display: flex; gap: 12px; margin-top: 10px; }
+    .social-icon {
+        width: 40px;
+        height: 40px;
+        background: #F4F4F4;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #1a1a1a;
+        text-decoration: none;
+        transition: 0.3s;
+    }
+    .social-icon:hover { background: var(--accent-gold); transform: translateY(-3px); }
+
+    /* Navigation Columns */
+    .footer-col h4 { font-size: 1.2rem; font-weight: 800; color: #1a1a1a; margin-bottom: 25px; }
+    .footer-links { list-style: none; padding: 0; }
+    .footer-links li { margin-bottom: 12px; }
+    .footer-links a { text-decoration: none; color: #666; font-weight: 500; transition: 0.3s; }
+    .footer-links a:hover { color: var(--accent-gold); padding-left: 5px; }
+
+    /* LinkedIn Blog Button */
+    .btn-footer-blog {
+        background: var(--nav-bg);
+        color: white;
+        padding: 5px 5px 5px 25px;
+        border-radius: 999px;
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        text-decoration: none;
+        font-weight: 700;
+        width: fit-content;
+        margin-top: 20px;
+    }
+    .btn-footer-blog .arrow {
+        background: var(--accent-gold);
+        color: black;
+        width: 35px;
+        height: 35px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    /* The Bottom Green Bar */
+    .bottom-bar {
+        background-color: #1B3C2D; /* Exact Forest Green */
+        padding: 25px 50px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        color: rgba(255,255,255,0.7);
+        font-size: 0.9rem;
+        margin-top: 20px; /* Space from the page content */
+    }
+    .bottom-links { display: flex; gap: 30px; }
+    .bottom-links a { color: white; text-decoration: none; opacity: 0.8; }
+
+    /*effect style*/
+    :root {
+    --accent: #ff8c00; /* syncs with buttons / brand */
+}
+
+/* Overlay */
+.legal-drawer {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.55);
+    display: none;
+    align-items: flex-end;
+    z-index: 9999;
+}
+
+.legal-drawer.active {
+    display: flex;
+}
+
+/* Slide-up sheet */
+.legal-sheet {
+    background: #0f0f0f;
+    width: 100%;
+    max-height: 80vh;
+    border-radius: 22px 22px 0 0;
+    padding: 30px 22px;
+    transform: translateY(100%);
+    animation: slideUp 0.45s ease forwards;
+    box-shadow: 0 -20px 50px rgba(0,0,0,0.4);
+    position: relative;
+}
+
+/* Handle */
+.legal-handle {
+    width: 45px;
+    height: 5px;
+    background: #444;
+    border-radius: 5px;
+    margin: 0 auto 15px;
+}
+
+/* Close */
+.legal-close {
+    position: absolute;
+    right: 18px;
+    top: 12px;
+    background: none;
+    border: none;
+    color: var(--accent);
+    font-size: 28px;
+    cursor: pointer;
+}
+
+/* Content */
+.legal-sheet h3 {
+    color: var(--accent);
+    margin-bottom: 12px;
+    font-size: 20px;
+}
+
+.legal-text {
+    color: #ddd;
+    font-size: 14px;
+    line-height: 1.7;
+    overflow-y: auto;
+    max-height: 55vh;
+}
+/* Enable touch gestures */
+.legal-sheet {
+    touch-action: pan-y;
+}
+
+/* Animation */
+@keyframes slideUp {
+    to {
+        transform: translateY(0);
+    }
+}
+
+/* ===== FOOTER MOBILE RESPONSIVENESS ===== */
+@media (max-width: 768px) {
+    /* 1. Stack the Grid to a single column */
+    .footer-cards-container {
+        grid-template-columns: 1fr !important; /* Forces vertical stack */
+        gap: 50px !important;
+        padding: 0 20px 60px !important;
+        text-align: center !important;
+    }
+
+    /* 2. Center the Logo and Brand Name */
+    .footer-logo-area {
+        align-items: center !important;
+    }
+
+    .footer-desc {
+        max-width: 100% !important; /* Allow description to fill width */
+        margin: 0 auto !important;
+    }
+
+    /* 3. Center the Social Icons */
+    .footer-socials {
+        justify-content: center !important;
+    }
+
+    /* 4. Center the Navigation Links */
+    .footer-col h4 {
+        margin-bottom: 15px !important;
+    }
+
+    .footer-links li {
+        margin-bottom: 10px !important;
+    }
+
+    /* 5. Center the LinkedIn Blog Button */
+    .btn-footer-blog {
+        margin: 20px auto 0 !important; /* Centers the button horizontally */
+    }
+
+    /* 6. The Bottom Green Bar - Stack it vertically */
+    .bottom-bar {
+        flex-direction: column !important;
+        gap: 20px !important;
+        padding: 30px 20px !important;
+        text-align: center !important;
+    }
+
+    .bottom-links {
+        flex-direction: column !important; /* Stack Privacy/Terms/Legal */
+        gap: 15px !important;
+    }
+
+    /* 7. Legal Drawer Adjustments */
+    .legal-sheet {
+        padding: 25px 15px !important;
+        max-height: 85vh !important;
+    }
+
+    .legal-text {
+        font-size: 13px !important; /* Slightly smaller for mobile readability */
+    }
+}
+</style>
+
+
+<footer class="footer-wrapper">
+    <div class="footer-cards-container">
+        <div class="footer-logo-area">
+            <div class="footer-logo-circle">
+                <img src="images/mylogo.png" alt="Logo">
+            </div>
+            <div class="footer-brand-name">Ezechi Franklin</div>
+            <p class="footer-desc">Crafting high-impact digital experiences through design, AI, and strategic development.</p>
+            
+            <div class="footer-socials">
+                <a href="https://wa.me/2349068824425" class="social-icon"><i class="fa-brands fa-whatsapp"></i></a>
+                <a href="https://https://www.linkedin.com/in/franktility747?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app" class="social-icon"><i class="fa-brands fa-linkedin-in"></i></a>
+                <a href="https://facebook.com/share/1E84nnvbM5/" class="social-icon"><i class="fa-brands fa-facebook-f"></i></a>
+                <a href="https://instagram.com/tilitygrafix61911?igsh=ZG5zNXM4dWxqbXVr" class="social-icon"><i class="fa-brands fa-instagram"></i></a>
+                <a href="mailto:franktilityf5@gmail.com" class="social-icon"><i class="fa-solid fa-envelope"></i></a>
+            </div>
+        </div>
+
+        <div class="footer-col">
+            <h4>Navigation</h4>
+            <ul class="footer-links">
+                <li><a href="#hero">Home</a></li>
+                <li><a href="#about">About</a></li>
+                <li><a href="#service">Services</a></li>
+                <li><a href="#project">Projects</a></li>
+            </ul>
+        </div>
+
+        <div class="footer-col">
+            <h4>Services</h4>
+            <ul class="footer-links">
+                <li><a href="#graphic">Graphic Design</a></li>
+                <li><a href="#aiprompt">AI Prompting</a></li>
+                <li><a href="#web-design-card">Web Design</a></li>
+                <li><a href="#estate">Real Estate</a></li>
+            </ul>
+        </div>
+
+        <div class="footer-col">
+            <h4>Let's Connect</h4>
+            <p class="footer-desc" style="margin-bottom: 10px;">Have a project in mind? Let's create something amazing together.</p>
+            <a href="https://www.linkedin.com/in/franktility747?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app" target="_blank" class="btn-footer-blog">
+                View All Blogs <div class="arrow"><i class="fa-solid fa-arrow-right"></i></div>
+            </a>
+        </div>
+    </div>
+
+    <div class="bottom-bar">
+        <div class="copyright">
+            Copyright © 2026 Ezechi Franklin. All Rights Reserved.
+        </div>
+       <div class="bottom-links">
+    <a href="#" id="open-terms">User Terms & Conditions</a>
+    <a href="#" id="open-privacy">Privacy Policy</a>
+</div>
+
+    </div>
+</footer>
+<!-- Legal Slide-Up Drawer -->
+<div class="legal-drawer" id="legalDrawer">
+    <div class="legal-sheet">
+        <div class="legal-handle"></div>
+        <button class="legal-close" id="closeLegal">&times;</button>
+        <h3 id="legalTitle"></h3>
+        <div class="legal-text" id="legalBody"></div>
+    </div>
+</div>
+
+        <script>
+        const drawer = document.getElementById("legalDrawer");
+        const title = document.getElementById("legalTitle");
+        const body = document.getElementById("legalBody");
+        const closeBtn = document.getElementById("closeLegal");
+
+        document.getElementById("open-terms").onclick = (e) => {
+        e.preventDefault();
+        title.innerText = "User Terms & Conditions";
+        body.innerHTML = `
+        <p>This website is a personal portfolio created to showcase my work, skills, and experience.</p>
+        <p>All designs, visuals, and written content belong to me unless stated otherwise and may not be reused without permission.</p>
+        <p>You may view and share links to this website for professional reference only.</p>
+        <p>These terms may be updated at any time.</p>
+        `;
+        drawer.classList.add("active");
+        };
+
+        document.getElementById("open-privacy").onclick = (e) => {
+        e.preventDefault();
+        title.innerText = "Privacy Policy";
+        body.innerHTML = `
+        <p>This website may collect basic information such as your name or email when you choose to contact me.</p>
+        <p>Your information is used only for communication and collaboration purposes.</p>
+        <p>No personal data is sold or shared with third parties.</p>
+        <p>Basic cookies or analytics may be used to improve website experience.</p>
+    `;
+    drawer.classList.add("active");
+};
+
+        closeBtn.onclick = () => drawer.classList.remove("active");
+
+        drawer.onclick = (e) => {
+        if (e.target === drawer) drawer.classList.remove("active");
+        };
+
+        let startY = 0;
+        let currentY = 0;
+        let isDragging = false;
+
+        const sheet = document.querySelector(".legal-sheet");
+
+        sheet.addEventListener("touchstart", (e) => {
+    startY = e.touches[0].clientY;
+    isDragging = true;
+        });
+
+        sheet.addEventListener("touchmove", (e) => {
+        if (!isDragging) return;
+
+        currentY = e.touches[0].clientY;
+        const deltaY = currentY - startY;
+
+        if (deltaY > 0) {
+        sheet.style.transform = `translateY(${deltaY}px)`;
+        }
+        });
+
+        sheet.addEventListener("touchend", () => {
+        isDragging = false;
+
+        const deltaY = currentY - startY;
+
+        if (deltaY > 120) {
+        // Close drawer
+        document.getElementById("legalDrawer").classList.remove("active");
+        }
+
+        // Reset position
+        sheet.style.transform = "";
+        });
+
+
+        window.addEventListener("load", function() {
+        const loader = document.getElementById("loader-wrapper");
+        // Smooth fade out
+        setTimeout(() => {
+            loader.classList.add("loader-hidden");
+        }, 500); // 0.5s delay for aesthetic effect
+    });
+
+    const hamburger = document.getElementById('hamburger');
+const navLinks = document.getElementById('navlist');
+
+hamburger.addEventListener('click', () => {
+    hamburger.classList.toggle('is-active');
+    navLinks.classList.toggle('active');
+});
+
+// Close menu when a link is clicked
+document.querySelectorAll('.nav-links a').forEach(link => {
+    link.addEventListener('click', () => {
+        hamburger.classList.remove('is-active');
+        navLinks.classList.remove('active');
+    });
+});
+
+const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('active');
+            }
+        });
+    }, { threshold: 0.1 }); // Triggers when 10% of the section is visible
+
+    // Target all elements you want to animate
+    document.querySelectorAll('.reveal').forEach((el) => observer.observe(el));
+</script>
+        </script>
+    </div>
+
+</body>
+</html>
