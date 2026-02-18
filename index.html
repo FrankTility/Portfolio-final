@@ -1528,7 +1528,7 @@
 
 <div id="projModal" class="proj-modal reveal">
     <div class="proj-modal-box">
-        <span onclick="closeProjModal()" class="absolute top-5 right-5 text-3xl cursor-pointer">&times;</span>
+        <span onclick="closeProjModal()" class="absolute top-4 right-4 text-3xl cursor-pointer z-50 text-gray-800 hover:text-red-500 font-bold">&times;</span>
         <img id="modalFullImg" class="modal-img-display" src="">
         
         <div id="modalControls" class="flex gap-4 mb-4" style="display:none;">
@@ -2606,7 +2606,7 @@ Designer (internally): “My brand standards just fainted.”</p>
 </section>
 
 <style>
-/* --- 1. HEADER (RESTORING YOUR ORIGINAL STYLE) --- */
+/* --- 1. HEADER --- */
 .testi-header {
     text-align: center;
     margin-bottom: 50px;
@@ -2625,51 +2625,52 @@ Designer (internally): “My brand standards just fainted.”</p>
 }
 .testi-header h1 span { color: #FFB800; }
 
-/* --- 2. THE SLIDER ENGINE --- */
+/* --- 2. SLIDER ENGINE --- */
 .testimonials-section {
     padding: 80px 0;
     background-color: #FFFFFF;
-    overflow: hidden; /* Keeps the page from scrolling horizontally */
+    width: 100%;
+    overflow: hidden; /* Prevents global horizontal scroll */
 }
 
 .testi-stage {
     width: 100%;
     position: relative;
+    overflow: hidden; /* Viewport for the track */
     display: flex;
-    justify-content: flex-start; /* Math works better from the left */
 }
 
 .testi-track {
     display: flex;
     transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1);
     align-items: center;
-    padding-left: 0; /* Will be set by JS */
+    will-change: transform;
 }
 
 .testi-card {
-    width: 600px; 
+    width: 600px; /* Fixed width for desktop centering math */
     margin: 0 30px; 
     background: #FFFFFF;
     padding: 40px;
     border-radius: 24px;
     box-shadow: 0 10px 40px rgba(0,0,0,0.05);
     text-align: left;
+    flex-shrink: 0; /* Prevents card squishing */
     
-    /* FIX: Ensure they are faint by default */
-    opacity: 0.15 !important; 
+    /* DEFAULT STATE: Faint and scaled down */
+    opacity: 0.2; 
     transform: scale(0.85);
     transition: all 0.5s ease;
-    flex-shrink: 0;
 }
 
-/* FIX: Only the active card gets full visibility */
+/* ACTIVE STATE: Centered card is bold and bright */
 .testi-card.active {
     opacity: 1 !important;
     transform: scale(1) !important;
     box-shadow: 0 20px 60px rgba(0,0,0,0.12);
 }
 
-/* Internal Card Details */
+/* Card Content Details */
 .stars { color: #FFB800; margin-bottom: 20px; font-size: 1.2rem; }
 .testi-text { color: #555; line-height: 1.8; font-size: 1.1rem; margin-bottom: 30px; }
 .testi-user { display: flex; align-items: center; gap: 15px; }
@@ -2681,120 +2682,74 @@ Designer (internally): “My brand standards just fainted.”</p>
 .ctrl-btn {
     width: 60px; height: 60px; border-radius: 50%; border: none;
     cursor: pointer; font-size: 1.5rem; transition: 0.3s;
+    display: flex; align-items: center; justify-content: center;
 }
 .prev-btn { background: #1B3C2D; color: white; }
 .next-btn { background: #FFB800; color: black; }
-/* ===== MOBILE RESPONSIVENESS ===== */
+
+/* MOBILE RESPONSIVENESS */
 @media (max-width: 768px) {
-    /* Shrink the header text for smaller screens */
-    .testi-header h1 {
-        font-size: 2.2rem;
-    }
-
-    /* Adjust the card width to fit phone screens */
+    .testi-header h1 { font-size: 2.2rem; }
     .testi-card {
-        width: 85vw; /* Card takes up 85% of the screen width */
-        margin: 0 10px; /* Smaller gaps so we can see the 'peek' of the next card */
-        padding: 25px; /* Less padding inside the card */
-    }
-
-    .testi-text {
-        font-size: 0.95rem; /* Slightly smaller text for mobile */
-        line-height: 1.6;
-    }
-
-    .testi-controls {
-        margin-top: 30px;
-    }
-    
-    .ctrl-btn {
-        width: 50px;
-        height: 50px;
+        width: 80vw; /* Card takes up 80% of screen */
+        margin: 0 10px; 
+        padding: 25px;
     }
 }
 </style>
 
-<section Id="testimonial" class="testimonials-section">
+<section id="testimonial" class="testimonials-section">
     <div class="testi-header">
-        <p style="color:#FFB800; font-weight:700; text-transform: uppercase; letter-spacing: 2px;">
-            — Clients Testimonials
-        </p>
+        <p>— Clients Testimonials</p>
         <h1>The Impact of My Work:<br><span>Client Testimonials</span></h1>
     </div>
 
     <div class="testi-stage">
         <div class="testi-track" id="testiTrack">
-
             <div class="testi-card">
-                <div class="stars">★★★★★ <span style="color:#000; font-weight:900;">5.0</span></div>
-                <p class="testi-text">
-                 “Working with Ezechi was seamless from start to finish. He translated our vision into a strong brand identity that elevated our presence and positioned us more professionally in the market.”
-                </p>
+                <div class="stars">★★★★★ <span>5.0</span></div>
+                <p class="testi-text">“Working with Ezechi was seamless...”</p>
                 <div class="testi-user">
                     <div class="user-img"><img src="images/EuropeTour.webp"></div>
-                    <div>
-                        <h4 style="margin:0;">Gift Agodi C.</h4>
-                        <p style="margin:0; color:#888;">Founder, GENZ Network</p>
-                    </div>
+                    <div><h4>Gift Agodi C.</h4><p>Founder, GENZ Network</p></div>
                 </div>
             </div>
 
             <div class="testi-card active">
-                <div class="stars">★★★★★ <span style="color:#000; font-weight:900;">5.0</span></div>
-                <p class="testi-text">
-                   “Ezechi delivered clean, modern designs that aligned perfectly with our brand values. His attention to detail and ability to work remotely made collaboration effortless despite the distance.”
-                </p>
+                <div class="stars">★★★★★ <span>5.0</span></div>
+                <p class="testi-text">“Ezechi delivered clean, modern designs...”</p>
                 <div class="testi-user">
                     <div class="user-img"><img src="images/mydailypasto.webp"></div>
-                    <div>
-                        <h4 style="margin:0;">Albert</h4>
-                        <p style="margin:0; color:#888;">CEO,MyDaily Pasto (Portugal)</p>
-                    </div>
+                    <div><h4>Albert</h4><p>CEO, MyDaily Pasto (Portugal)</p></div>
                 </div>
             </div>
 
             <div class="testi-card">
-                <div class="stars">★★★★★ <span style="color:#000; font-weight:900;">5.0</span></div>
-                <p class="testi-text">
-                   “Ezechi handled all the flyers and billboards for my homecoming with excellence. The designs were bold, consistent, and highly engaging—contributing significantly to the visibility and success of the event.”
-                </p>
+                <div class="stars">★★★★★ <span>5.0</span></div>
+                <p class="testi-text">“Ezechi handled all the flyers...”</p>
                 <div class="testi-user">
                     <div class="user-img"><img src="images/HomecomingShadowCard-copy.webp"></div>
-                    <div>
-                        <h4 style="margin:0;">Victory</h4>
-                        <p style="margin:0; color:#888;">BBNaija Season 10 Housemate</p>
-                    </div>
+                    <div><h4>Victory</h4><p>BBNaija Housemate</p></div>
                 </div>
             </div>
 
-             <div class="testi-card">
-                <div class="stars">★★★★★ <span style="color:#000; font-weight:900;">5.0</span></div>
-                <p class="testi-text">
-                    “Ezechi understands branding beyond aesthetics. He created visuals that were not only attractive but also strategic, helping us communicate clearly with our audience.”
-                </p>
+            <div class="testi-card">
+                <div class="stars">★★★★★ <span>5.0</span></div>
+                <p class="testi-text">“Ezechi understands branding...”</p>
                 <div class="testi-user">
                     <div class="user-img"><img src="images/colortribe.webp"></div>
-                    <div>
-                        <h4 style="margin:0;">Joshua Enebe</h4>
-                        <p style="margin:0; color:#888;">CEO, Color Tribe</p>
-                    </div>
+                    <div><h4>Joshua Enebe</h4><p>CEO, Color Tribe</p></div>
                 </div>
             </div>
 
-             <div class="testi-card">
-                <div class="stars">★★★★★ <span style="color:#000; font-weight:900;">5.0</span></div>
-                <p class="testi-text">
-                    “As both a designer and instructor, Ezechi consistently delivered high-quality creative work while mentoring students effectively. His professionalism and design expertise added real value to our organization.”
-                </p>
+            <div class="testi-card">
+                <div class="stars">★★★★★ <span>5.0</span></div>
+                <p class="testi-text">“As both a designer and instructor...”</p>
                 <div class="testi-user">
                     <div class="user-img"><img src="images/ARINZE.jpg"></div>
-                    <div>
-                        <h4 style="margin:0;">Arinze Ngwu</h4>
-                        <p style="margin:0; color:#888;">CEO,Arizona Computer Center</p>
-                    </div>
+                    <div><h4>Arinze Ngwu</h4><p>CEO, Arizona Computer Center</p></div>
                 </div>
             </div>
-
         </div>
     </div>
 
@@ -2804,52 +2759,55 @@ Designer (internally): “My brand standards just fainted.”</p>
     </div>
 </section>
 
-<script>
-    let activeIndex = 0;
+   <script>
+    let activeIndex = 1; // Starts with the 2nd card (Albert) centered
 
     function rotate(direction) {
         const track = document.getElementById('testiTrack');
         const cards = document.querySelectorAll('.testi-card');
         
-        // 1. Update active index
+        // 1. Update active index and keep it within bounds
         activeIndex += direction;
         if (activeIndex < 0) activeIndex = 0;
         if (activeIndex >= cards.length) activeIndex = cards.length - 1;
 
-        // 2. Update Active Class
+        // 2. Update Active Class for fading/scaling effects
         cards.forEach((card, i) => {
             card.classList.toggle('active', i === activeIndex);
         });
 
-        // 3. THE DYNAMIC MATH FIX
-        // Get the actual width of a card and its margin at the current screen size
+        // 3. CENTER-FOCUS MATH
+        const stage = document.querySelector('.testi-stage');
         const cardStyle = window.getComputedStyle(cards[0]);
-        const cardWidth = parseFloat(cardStyle.width);
-        const cardMargin = parseFloat(cardStyle.marginLeft) + parseFloat(cardStyle.marginRight);
-        const fullSpace = cardWidth + cardMargin;
         
-        // Find current screen center
-        const screenCenter = window.innerWidth / 2;
+        const cardWidth = cards[0].offsetWidth;
+        const marginLeft = parseFloat(cardStyle.marginLeft);
+        const marginRight = parseFloat(cardStyle.marginRight);
+        const fullSpace = cardWidth + marginLeft + marginRight;
         
-        // Calculate the center-point offset
-        const initialOffset = screenCenter - (cardWidth / 2) - parseFloat(cardStyle.marginLeft);
-
-        // Move the track
-        const moveX = initialOffset - (activeIndex * fullSpace);
+        // Find the center of the viewport stage
+        const stageCenter = stage.offsetWidth / 2;
+        
+        // Calculate the position to center the active card
+        // moveX = (Half of Stage) - (Half of Card Width) - (Sum of previous cards' widths)
+        const moveX = stageCenter - (cardWidth / 2) - marginLeft - (activeIndex * fullSpace);
 
         track.style.transform = `translateX(${moveX}px)`;
     }
 
-    // Call once when the page loads
-    window.addEventListener('load', () => rotate(0));
+    // Call once when the page loads to set the initial Albert card
+    window.addEventListener('load', () => {
+        // Small timeout ensures browser has calculated widths correctly
+        setTimeout(() => rotate(0), 100);
+    });
 
-    // RE-CENTER ON RESIZE (Vital for mobile orientation changes)
+    // Handle screen resize to keep the active card centered
     let resizeTimer;
     window.addEventListener('resize', () => {
         clearTimeout(resizeTimer);
         resizeTimer = setTimeout(() => {
             rotate(0);
-        }, 100);
+        }, 150);
     });
 </script>
 
