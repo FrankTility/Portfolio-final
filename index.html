@@ -1323,21 +1323,22 @@
 }
 
 /* Modal container */
+/* Update the .proj-modal-box to handle layering */
 .proj-modal-box {
     background: #fff;
     width: 90%;
     max-width: 900px;
-    max-height: 90vh;           /* 🔑 constrain height */
+    max-height: 90vh;
     border-radius: 16px;
     padding: 24px;
-    overflow-y: auto;           /* 🔑 enable scrolling */
-    position: relative;
+    overflow-y: auto;
+    position: relative; /* Context for the absolute button */
 }
 
-/* Image handling */
+/* Ensure the sticky image doesn't cover the button area */
 .modal-img-display {
     width: 100%;
-    max-height: 45vh;           /* 🔑 image stays balanced */
+    max-height: 45vh;
     object-fit: contain;
     border-radius: 12px;
     margin-bottom: 1.5rem;
@@ -1345,6 +1346,7 @@
     top: 0;
     background: #fff;
     padding-bottom: 1rem;
+    z-index: 500; /* Lower than the close button */
 }
 
     .btn-all-projects i { background: black; color: white; width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; }
@@ -1393,6 +1395,33 @@
 .project-item:hover .project-tag {
     background: var(--accent-gold);
     color: #000;
+}
+/* New CSS for the Close Button */
+.close-proj-btn {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    width: 40px;
+    height: 40px;
+    background: white;
+    color: #333;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    cursor: pointer;
+    z-index: 1000; /* Higher than sticky images */
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    transition: 0.3s;
+    line-height: 1;
+    border: none;
+}
+
+.close-proj-btn:hover {
+    background: #FFB800;
+    color: black;
+    transform: rotate(90deg);
 }
     @keyframes slide-left {
         0%, 45% { transform: translateX(0); }
@@ -1526,14 +1555,21 @@
 
 </section>
 
-<div id="projModal" class="proj-modal reveal">
+<div id="projModal" class="proj-modal">
     <div class="proj-modal-box">
-        <span onclick="closeProjModal()" class="absolute top-4 right-4 text-3xl cursor-pointer z-50 text-gray-800 hover:text-red-500 font-bold">&times;</span>
+        <button onclick="closeProjModal()" class="close-proj-btn" aria-label="Close Modal">
+            &times;
+        </button>
+
         <img id="modalFullImg" class="modal-img-display" src="">
         
         <div id="modalControls" class="flex gap-4 mb-4" style="display:none;">
-            <button onclick="changeModalImg(-1)" class="bg-gray-200 p-2 rounded-lg"><i class="fa-solid fa-chevron-left"></i> Prev</button>
-            <button onclick="changeModalImg(1)" class="bg-gray-200 p-2 rounded-lg">Next <i class="fa-solid fa-chevron-right"></i></button>
+            <button onclick="changeModalImg(-1)" class="bg-gray-200 p-2 rounded-lg">
+                <i class="fa-solid fa-chevron-left"></i> Prev
+            </button>
+            <button onclick="changeModalImg(1)" class="bg-gray-200 p-2 rounded-lg">
+                Next <i class="fa-solid fa-chevron-right"></i>
+            </button>
         </div>
 
         <h2 id="modalProjTitle" class="text-3xl font-black mb-2"></h2>
@@ -1749,27 +1785,42 @@ const projects = {
     let modalImgIndex = 0;
 
     function openProject(key) {
-        const p = projects[key];
-        activeProjImages = p.images;
-        modalImgIndex = 0;
-        
-        document.getElementById('modalFullImg').src = activeProjImages[0];
-        document.getElementById('modalProjTitle').innerText = p.title;
-        document.getElementById('modalProjDesc').innerHTML = p.desc;
+    const p = projects[key];
+    activeProjImages = p.images;
+    modalImgIndex = 0;
+    
+    document.getElementById('modalFullImg').src = activeProjImages[0];
+    document.getElementById('modalProjTitle').innerText = p.title;
+    document.getElementById('modalProjDesc').innerHTML = p.desc;
 
-        
-        // Show controls only if there's more than one image
-        document.getElementById('modalControls').style.display = activeProjImages.length > 1 ? 'flex' : 'none';
-        
-        document.getElementById('projModal').style.display = 'flex';
+    // Show controls only if there's more than one image
+    document.getElementById('modalControls').style.display = activeProjImages.length > 1 ? 'flex' : 'none';
+    
+    document.getElementById('projModal').style.display = 'flex';
+    
+    // NEW FIX: Stop the background from scrolling while modal is open
+    document.body.style.overflow = 'hidden'; 
+}
+
+function changeModalImg(step) {
+    modalImgIndex = (modalImgIndex + step + activeProjImages.length) % activeProjImages.length;
+    document.getElementById('modalFullImg').src = activeProjImages[modalImgIndex];
+}
+
+function closeProjModal() { 
+    document.getElementById('projModal').style.display = 'none'; 
+    
+    // NEW FIX: Allow the background to scroll again
+    document.body.style.overflow = 'auto'; 
+}
+
+// NEW UX ADDITION: Close modal if user clicks outside the white box
+window.addEventListener('click', function(event) {
+    const modal = document.getElementById('projModal');
+    if (event.target === modal) {
+        closeProjModal();
     }
-
-    function changeModalImg(step) {
-        modalImgIndex = (modalImgIndex + step + activeProjImages.length) % activeProjImages.length;
-        document.getElementById('modalFullImg').src = activeProjImages[modalImgIndex];
-    }
-
-    function closeProjModal() { document.getElementById('projModal').style.display = 'none'; }
+});
 </script>
 
 <style>
@@ -2708,7 +2759,7 @@ Designer (internally): “My brand standards just fainted.”</p>
         <div class="testi-track" id="testiTrack">
             <div class="testi-card">
                 <div class="stars">★★★★★ <span>5.0</span></div>
-                <p class="testi-text">“Working with Ezechi was seamless...”</p>
+                <p class="testi-text">“Working with Ezechi was seamless from start to finish. He translated our vision into a strong brand identity that elevated our presence and positioned us more professionally in the market.”</p>
                 <div class="testi-user">
                     <div class="user-img"><img src="images/EuropeTour.webp"></div>
                     <div><h4>Gift Agodi C.</h4><p>Founder, GENZ Network</p></div>
@@ -2717,7 +2768,7 @@ Designer (internally): “My brand standards just fainted.”</p>
 
             <div class="testi-card active">
                 <div class="stars">★★★★★ <span>5.0</span></div>
-                <p class="testi-text">“Ezechi delivered clean, modern designs...”</p>
+                <p class="testi-text">“Ezechi delivered clean, modern designs that aligned perfectly with our brand values. His attention to detail and ability to work remotely made collaboration effortless despite the distance.”</p>
                 <div class="testi-user">
                     <div class="user-img"><img src="images/mydailypasto.webp"></div>
                     <div><h4>Albert</h4><p>CEO, MyDaily Pasto (Portugal)</p></div>
@@ -2726,7 +2777,7 @@ Designer (internally): “My brand standards just fainted.”</p>
 
             <div class="testi-card">
                 <div class="stars">★★★★★ <span>5.0</span></div>
-                <p class="testi-text">“Ezechi handled all the flyers...”</p>
+                <p class="testi-text">“My guy Frank as I fondly call him handled all the flyers and billboards for my homecoming with excellence. The designs were bold, consistent, and highly engaging—contributing significantly to the visibility and success of the event.”</p>
                 <div class="testi-user">
                     <div class="user-img"><img src="images/HomecomingShadowCard-copy.webp"></div>
                     <div><h4>Victory</h4><p>BBNaija Housemate</p></div>
@@ -2735,7 +2786,7 @@ Designer (internally): “My brand standards just fainted.”</p>
 
             <div class="testi-card">
                 <div class="stars">★★★★★ <span>5.0</span></div>
-                <p class="testi-text">“Ezechi understands branding...”</p>
+                <p class="testi-text">“Ezechi understands branding beyond aesthetics. He created visuals that were not only attractive but also strategic, helping us communicate clearly with our audience.”</p>
                 <div class="testi-user">
                     <div class="user-img"><img src="images/colortribe.webp"></div>
                     <div><h4>Joshua Enebe</h4><p>CEO, Color Tribe</p></div>
@@ -2744,7 +2795,7 @@ Designer (internally): “My brand standards just fainted.”</p>
 
             <div class="testi-card">
                 <div class="stars">★★★★★ <span>5.0</span></div>
-                <p class="testi-text">“As both a designer and instructor...”</p>
+                <p class="testi-text">“As both a designer and instructor, Ezechi brought a unique blend of creativity and teaching expertise to our collaboration. His insights helped us refine our approach and achieve better results.”</p>
                 <div class="testi-user">
                     <div class="user-img"><img src="images/ARINZE.jpg"></div>
                     <div><h4>Arinze Ngwu</h4><p>CEO, Arizona Computer Center</p></div>
