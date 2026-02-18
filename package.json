@@ -1,0 +1,10 @@
+{
+  "name": "portfolio-final",
+  "version": "1.0.0",
+  "scripts": {
+    "build": "node_modules\\.bin\\tailwindcss -i input.css -o style.css"
+  },
+  "devDependencies": {
+    "tailwindcss": "^4.1.18"
+  }
+}
