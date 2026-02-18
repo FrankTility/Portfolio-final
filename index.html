@@ -2232,38 +2232,58 @@ window.addEventListener('click', function(event) {
 
     /* Right Side Form */
     .contact-form {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 20px;
-        position: relative;
+    /* 1. MOBILE-FIRST GRID (Prevents the 'drift') */
+    display: grid;
+    grid-template-columns: 1fr; /* Single column for mobile */
+    gap: 20px;
+    
+    /* 2. RESPONSIVE DIMENSIONS */
+    width: 100% !important;
+    max-width: 100% !important; /* Never wider than the viewport */
+    box-sizing: border-box !important; /* Padding stays inside the box */
+    
+    /* 3. ORIGINAL STYLING & GLASS EFFECT */
+    position: relative;
     overflow: hidden;
-    padding: 40px !important; /* Ensures space inside the glass box */
+    padding: 30px 20px !important; /* Slightly tighter for mobile screens */
     border-radius: 20px !important;
     
-    /* THE BACKGROUND: Image + Forest Green Overlay */
     background: linear-gradient(rgba(0, 43, 0, 0.7), rgba(58, 59, 58, 0.7)), 
                 url('images/havework-copy.webp') no-repeat center center !important;
     background-size: cover !important;
     
-    /* THE GLASS EFFECT: Blur */
     backdrop-filter: blur(15px) !important;
     -webkit-backdrop-filter: blur(15px);
-    
     border: 1px solid rgba(255, 255, 255, 0.1) !important;
-    }
+}
 
-    .form-group { display: flex; flex-direction: column; gap: 8px; }
-    .form-group.full-width { grid-column: span 2; }
-
-    .form-group label { font-weight: 700; font-size: 0.9rem; color: #eee; }
-    
-    /* 1. Base Transition for Smoothness */
+/* --- THE INPUT FIELDS (Preserving Transitions & Z-Index) --- */
 .form-group input, 
 .form-group select, 
 .form-group textarea {
-    transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1) !important;
+    /* KEEPING YOUR ORIGINAL BEHAVIOR */
     position: relative;
-    z-index: 1;
+    z-index: 2; /* Ensures text stays visible above the glass effect */
+    transition: all 0.3s ease; /* Smooth focus animations */
+    
+    /* ADDING RESPONSIVENESS */
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+    display: block;
+}
+
+/* --- DESKTOP ADAPTATION (Switching back to your original layout) --- */
+@media (min-width: 768px) {
+    .contact-form {
+        grid-template-columns: 1fr 1fr; /* Two columns for desktop only */
+        padding: 40px !important; /* Restore original padding */
+    }
+
+    /* Ensure the Message box spans both columns on desktop */
+    .form-group.full-width {
+        grid-column: span 2;
+    }
 }
 
     /* 2. Hover Effect: The "Pop" */
@@ -2429,7 +2449,7 @@ window.addEventListener('click', function(event) {
         </a>
     </div>
 
-    <form class="contact-form reveal" id="whatsappForm">
+    <form class="contact-form reveal w-full max-w-[100%] md:max-w-[550px] mx-auto lg:mx-0" id="whatsappForm">
     <div class="form-group">
         <label for="name">Your Name *</label>
         <input type="text" id="name" placeholder="Ex. Ozoani Nneamaka" autocomplete="name" required>
