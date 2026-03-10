@@ -159,7 +159,7 @@
         padding: 80px 50px;
         max-width: 1200px;
         margin: 0 auto;
-        margin-top: 100px;
+        margin-top: 10px;
         background: #FFFFFF;
         position: relative;
     }
@@ -683,7 +683,7 @@
             <img src="images\mynewprofile.webp" alt="Ezechi Franklin" class="person-img">
             <div class="floating-tag tag-1">Graphic Designer</div>
             <div class="floating-tag tag-3">AI Prompt Engineer</div>
-            <div class="floating-tag tag-2">Real Estate Developer</div>
+            <div class="floating-tag tag-2">Fullstack Developer</div>
         </div>
         </section>
         </div>
@@ -839,7 +839,7 @@
     .learn-more { color: var(--nav-bg); font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 8px; margin-top: 20px; }
 
     /* Modal & Gallery UI */
-    .modal-overlay { position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.85); display: none; z-index: 1000; justify-content: center; align-items: center; padding: 20px; }
+    .modal-overlay { position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.85); display: none; z-index: 1000; justify-content: center; align-items: center; padding: 20px; margin-top: 6%; }
     .modal-box { background: white; width: 100%; max-width: 900px; max-height: 90vh; border-radius: 24px; padding: 40px; overflow-y: auto; position: relative; }
     .gallery-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 15px; margin-top: 25px; }
     .gallery-slab { cursor: pointer; border-radius: 12px; overflow: hidden; border: 2px solid #eee; transition: 0.3s; background: #f9f9f9; text-align: center; }
@@ -852,7 +852,7 @@
     .service-details-list li { font-size: 1.1rem; line-height: 1.6; border-bottom: 1px solid #f0f0f0; padding: 15px 0; display: flex; gap: 15px; }
 
     /* Lightbox (Full Image View) */
-    #lightbox { position: fixed; z-index: 2000; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); display: none; flex-direction: column; justify-content: center; align-items: center; }
+    #lightbox { position: fixed; z-index: 2000; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); display: none; flex-direction: column; justify-content: center; align-items: center; margin-top: 5%;}
     #lightbox img { max-width: 85%; max-height: 80%; border-radius: 8px; border: 3px solid #fff; }
     .lightbox-nav { position: absolute; width: 95%; display: flex; justify-content: space-between; }
     .nav-arrow { background: rgba(255,255,255,0.2); color: white; border: none; width: 60px; height: 60px; border-radius: 50%; cursor: pointer; font-size: 1.5rem; }
@@ -935,7 +935,8 @@
 <script>
     const serviceData = {
         "graphic": {
-            "Birthday Design": ["images/BroPeace-copy.webp", "images/Heritage-copy.webp", "images/napooo-copy.webp", "images/PapaBirthday-copy.webp", "images/BroPeace-copy.webp"], // REPLACE with your image links
+            "Birthday Design": ["images/BroPeace-copy.webp", "images/Heritage-copy.webp", "images/napooo-copy.webp", "images/PapaBirthday-copy.webp", "images/BroPeace-copy.webp"],
+            
             "Business Flyer": ["images/NoFreeDesign-copy.webp", "images/Angelaflyer-copy.webp", "images/HomeComingSponsorship-copy2.webp", "images/babes-copy.webp", "images/havework-copy.webp", "images/birthdayPromo-copy.webp", "images/myCatalog-copy.webp", "images/bringJobs-copy.webp", "images/ChideraSew.webp", "images/hireUs-copy.webp", "images/NightParty-copy4.webp", "images/Deangel.webp", "images/EDXFlier-copy.webp", "images/topnotch-copy.webp", "images/EuropeTour.webp", "images/Fashion.webp", "images/zinnbeautyflier.webp", "images/megaaffiliate.webp", "images/wedesign.webp", "images/WEEKEND-copy.webp", "images/whatarewe-copy.webp",],
 
             "Business Logo": ["images/aeroessentials-copy.webp", "images/AngelaLogo-copy.webp", "images/AnnezéFever-copy3.webp", "images/AsecLogo-copy.webp", "images/chainDrive.webp", "images/colortribe.webp", "images/edExchange-copy.webp", "images/henlev.webp", "images/Jsolution.webp", "images/kaimaCro.webp", "images/kaysLogo-copy.webp", "images/mydailypasto.webp", "images/nellyschic.webp", "images/NevLogo-copy.webp", "images/olymzysig.webp", "images/petify.webp", "images/sephinagadgets.webp", "images/twinstouch.webp", "images/veee-copy.webp", "images/wakkychicken.webp", "images/zinnbeauty.webp"],
@@ -1074,10 +1075,9 @@
         box-shadow: 0 4px 10px rgba(0,0,0,0.2);
     }
 
-    .at-1 { top: 10%; left: -10%; }
+    .at-1 { top: 25%; left: -10%; }
     .at-3 { bottom: 30%; left: -10%; }
     .at-4 { bottom: 10%; left: 10%; }
-    .at-5 { top: 5%; right: 10%; }
     .at-6 { top: 25%; right: -15%; }
     .at-7 { bottom: 40%; right: -12%; }
     .at-8 { bottom: 15%; right: 0%; }
@@ -1142,11 +1142,11 @@
 <section id="about" class="about-section reveal">
     <div name="about" class="about-image-container">
         <div class="gold-circle-bg"></div>
-        <img src="images/casualprofile.webp" class="person-about-img"> <div class="about-tag at-1">Graphic Design</div>
-        <div class="about-tag at-3">Real Estate</div>
+        <img src="images/casualprofile.webp" class="person-about-img"> 
+        <div class="about-tag at-1">Graphic Design</div>
+        <div class="about-tag at-3">UI/UX Design</div>
         <div class="about-tag at-4">Web Design</div>
-        <div class="about-tag at-5">AI Prompt Engineering</div>
-        <div class="about-tag at-6">Real Estate</div>
+        <div class="about-tag at-6">AI Prompt Engineering</div>
         <div class="about-tag at-7">Printing</div>
         <div class="about-tag at-8">Branding</div>
     </div>
